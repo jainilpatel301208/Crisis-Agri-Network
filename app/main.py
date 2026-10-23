@@ -58,10 +58,28 @@ async def get_weather_context(
     return WeatherService.get_weather_context(latitude, longitude, preset)
 
 
+from pydantic import BaseModel
+
+class ApiKeyPayload(BaseModel):
+    api_key: str
+
+
+@app.post("/api/settings/api-key", tags=["Settings"])
+async def set_api_key(payload: ApiKeyPayload):
+    """Dynamically configure Gemini API key from the enterprise web interface."""
+    cleaned = payload.api_key.strip()
+    settings.GEMINI_API_KEY = cleaned
+    return {
+        "success": True,
+        "configured": bool(len(cleaned) > 10),
+        "message": "Gemini Multimodal API key registered successfully." if len(cleaned) > 10 else "API key reset."
+    }
+
+
 @app.post("/api/diagnose/image", response_model=DualTargetDiagnosisResponse, tags=["Diagnosis"])
 async def diagnose_crop_image(
     file: UploadFile = File(..., description="Crop leaf/plant image captured by farmer or field agent"),
-    target_language: str = Form("Assamese", description="Target Indic language for farmer advisory"),
+    target_language: str = Form("English", description="Target Indic language for farmer advisory"),
     unstructured_text: Optional[str] = Form(None, description="Transcribed audio or farmer symptom notes"),
     latitude: float = Form(28.6139, description="Field latitude"),
     longitude: float = Form(77.2090, description="Field longitude"),
@@ -111,7 +129,7 @@ async def diagnose_crop_text(payload: TextDiagnosisRequest):
 @app.post("/api/diagnose/sample", response_model=DualTargetDiagnosisResponse, tags=["Diagnosis"])
 async def diagnose_sample(
     sample_id: str = Form("wheat_rust", description="Incident preset: 'wheat_rust', 'rice_blast', 'potato_blight', 'pest_aphid', or 'healthy'"),
-    target_language: str = Form("Assamese", description="Target Indic language")
+    target_language: str = Form("English", description="Target Indic language")
 ):
     """
     Pre-configured incident scenario for rapid demonstration, testing, and zero-latency evaluation.

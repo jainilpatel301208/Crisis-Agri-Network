@@ -15,6 +15,7 @@ class LanguageMetadata:
 
 
 SUPPORTED_LANGUAGES_REGISTRY: Dict[str, LanguageMetadata] = {
+    SupportedLanguage.ENGLISH.value: LanguageMetadata("en", "English", "English", "en-US"),
     SupportedLanguage.ASSAMESE.value: LanguageMetadata("as", "Assamese", "অসমীয়া", "as-IN"),
     SupportedLanguage.BENGALI.value: LanguageMetadata("bn", "Bengali", "বাংলা", "bn-IN"),
     SupportedLanguage.GUJARATI.value: LanguageMetadata("gu", "Gujarati", "ગુજરાતી", "gu-IN"),
@@ -30,7 +31,6 @@ SUPPORTED_LANGUAGES_REGISTRY: Dict[str, LanguageMetadata] = {
     SupportedLanguage.TAMIL.value: LanguageMetadata("ta", "Tamil", "தமிழ்", "ta-IN"),
     SupportedLanguage.TELUGU.value: LanguageMetadata("te", "Telugu", "తెలుగు", "te-IN"),
     SupportedLanguage.URDU.value: LanguageMetadata("ur", "Urdu", "اُردُو", "ur-IN", rtl=True),
-    SupportedLanguage.ENGLISH.value: LanguageMetadata("en", "English", "English", "en-US"),
 }
 
 # Localized action templates and keywords per language

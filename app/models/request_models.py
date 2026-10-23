@@ -23,7 +23,7 @@ def sanitize_prompt_text(text: Optional[str]) -> str:
 class TextDiagnosisRequest(BaseModel):
     """Payload for textual or audio-transcript crop symptom description."""
     unstructured_text: str = Field(..., max_length=1000, description="Farmer symptom notes or transcribed dialect audio")
-    target_language: SupportedLanguage = Field(default=SupportedLanguage.ASSAMESE, description="Target regional language")
+    target_language: SupportedLanguage = Field(default=SupportedLanguage.ENGLISH, description="Target regional language")
     latitude: Optional[float] = Field(default=28.6139, ge=-90.0, le=90.0, description="Field latitude")
     longitude: Optional[float] = Field(default=77.2090, ge=-180.0, le=180.0, description="Field longitude")
     crop_hint: Optional[str] = Field(default=None, max_length=100, description="Optional crop hint")

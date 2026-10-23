@@ -61,6 +61,16 @@ class GeoCoordinates(BaseModel):
     district_ref: Optional[str] = "Zone 4 - Gangetic Agricultural Basin"
 
 
+class VisualSpecimenAnalysis(BaseModel):
+    """Computer vision metrics extracted from uploaded crop specimen imagery."""
+    specimen_detected: bool = True
+    dominant_pattern: str = Field(description="e.g. Chlorotic Yellow Rust Pustules, Necrotic Blight Lesions, Vigorous Green")
+    rust_pustule_pct: float = Field(default=0.0, ge=0.0, le=100.0)
+    blight_necrosis_pct: float = Field(default=0.0, ge=0.0, le=100.0)
+    healthy_canopy_pct: float = Field(default=100.0, ge=0.0, le=100.0)
+    diagnostic_confidence_pct: float = Field(default=92.5, ge=0.0, le=100.0)
+
+
 class GovernmentTelemetryReport(BaseModel):
     """Strict JSON telemetry schema for enterprise government dashboards and disaster response."""
     report_id: str
@@ -74,6 +84,7 @@ class GovernmentTelemetryReport(BaseModel):
     resource_routing: ResourceRouting
     verified_safe_remedies: List[str]
     prohibited_treatments: List[str]
+    visual_analysis: Optional[VisualSpecimenAnalysis] = None
     safety_audit_status: str = Field(default="VERIFIED_SAFE_ORGANIC_FIRST")
 
 
