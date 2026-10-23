@@ -15,6 +15,14 @@ from app.services.gemini_service import GeminiService
 from app.services.language_service import LanguageService
 from app.services.weather_service import WeatherService
 
+SAMPLE_DESCRIPTIONS = {
+    "wheat_rust": "Wheat field leaves show bright yellow-orange powder pustules in stripes. Plants are drying out.",
+    "rice_blast": "Rice paddy crop has diamond-shaped brown lesions with gray centers on leaf blades and rotten collar.",
+    "potato_blight": "Potato foliage shows water-soaked dark lesions with white fungal fuzz underneath in damp weather.",
+    "pest_aphid": "Leaves are curling with aphids clustering under stems and honeydew secretions.",
+    "healthy": "Lush green wheat leaves with vigorous growth and no visible fungal or pest damage."
+}
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
@@ -58,22 +66,7 @@ async def get_weather_context(
     return WeatherService.get_weather_context(latitude, longitude, preset)
 
 
-from pydantic import BaseModel
 
-class ApiKeyPayload(BaseModel):
-    api_key: str
-
-
-@app.post("/api/settings/api-key", tags=["Settings"])
-async def set_api_key(payload: ApiKeyPayload):
-    """Dynamically configure Gemini API key from the enterprise web interface."""
-    cleaned = payload.api_key.strip()
-    settings.GEMINI_API_KEY = cleaned
-    return {
-        "success": True,
-        "configured": bool(len(cleaned) > 10),
-        "message": "Gemini Multimodal API key registered successfully." if len(cleaned) > 10 else "API key reset."
-    }
 
 
 @app.post("/api/diagnose/image", response_model=DualTargetDiagnosisResponse, tags=["Diagnosis"])
@@ -134,14 +127,7 @@ async def diagnose_sample(
     """
     Pre-configured incident scenario for rapid demonstration, testing, and zero-latency evaluation.
     """
-    descriptions = {
-        "wheat_rust": "Wheat field leaves show bright yellow-orange powder pustules in stripes. Plants are drying out.",
-        "rice_blast": "Rice paddy crop has diamond-shaped brown lesions with gray centers on leaf blades and rotten collar.",
-        "potato_blight": "Potato foliage shows water-soaked dark lesions with white fungal fuzz underneath in damp weather.",
-        "pest_aphid": "Leaves are curling with aphids clustering under stems and honeydew secretions.",
-        "healthy": "Lush green wheat leaves with vigorous growth and no visible fungal or pest damage."
-    }
-    sample_text = descriptions.get(sample_id, descriptions["wheat_rust"])
+    sample_text = SAMPLE_DESCRIPTIONS.get(sample_id, SAMPLE_DESCRIPTIONS["wheat_rust"])
 
     response = await GeminiService.analyze_crop(
         image_bytes=None,

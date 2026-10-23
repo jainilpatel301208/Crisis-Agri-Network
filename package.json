@@ -8,9 +8,7 @@
     "test": "pytest tests/ -v",
     "dev:frontend": "npx serve app/static -l 3000"
   },
-  "dependencies": {
-    "three": "^0.160.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "serve": "^14.2.4"
   },

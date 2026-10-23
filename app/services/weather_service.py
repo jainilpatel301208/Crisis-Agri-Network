@@ -1,18 +1,20 @@
 """Weather contextualization service for agricultural disease risk modeling."""
 
 import random
+from functools import lru_cache
 from typing import Optional
 from app.models.response_models import WeatherContext
 
 
 class WeatherService:
-    """Provides real-time contextual microclimate data for crop pathology evaluation."""
+    """Provides real-time contextual microclimate data with O(1) LRU caching."""
 
     @staticmethod
-    def get_weather_context(
-        latitude: Optional[float] = 28.6139,
-        longitude: Optional[float] = 77.2090,
-        preset: Optional[str] = None
+    @lru_cache(maxsize=64)
+    def _compute_cached_weather(
+        lat_rounded: float,
+        lon_rounded: float,
+        preset: Optional[str]
     ) -> WeatherContext:
         """
         Generate contextual microclimate data for crop pathogen analysis.
@@ -33,8 +35,7 @@ class WeatherService:
             blight_risk = "LOW FUNGAL / HIGH PEST: Hot, arid conditions suppress fungi but favor aphid and borer multiplication."
             spray_adv = "SPRAYING PERMITTED: Early morning or late evening application only to avoid foliar scorch."
         else:
-            # Deterministic variation based on coordinates
-            base_seed = int((latitude or 28.0) * 100 + (longitude or 77.0) * 100)
+            base_seed = int(lat_rounded * 100 + lon_rounded * 100)
             rng = random.Random(base_seed)
             temp = round(rng.uniform(19.0, 29.0), 1)
             humidity = round(rng.uniform(65.0, 92.0), 1)
@@ -62,5 +63,16 @@ class WeatherService:
             wind_speed_kmh=wind,
             microclimate_blight_risk=blight_risk,
             spray_advisory=spray_adv,
-            location_name=f"Agro-Zone Lat {latitude:.2f}°N, Lon {longitude:.2f}°E" if latitude and longitude else "Indo-Gangetic Agro-Climatic Belt"
+            location_name=f"Agro-Zone Lat {lat_rounded:.2f}°N, Lon {lon_rounded:.2f}°E"
         )
+
+    @classmethod
+    def get_weather_context(
+        cls,
+        latitude: Optional[float] = 28.6139,
+        longitude: Optional[float] = 77.2090,
+        preset: Optional[str] = None
+    ) -> WeatherContext:
+        lat_r = round(float(latitude or 28.6139), 2)
+        lon_r = round(float(longitude or 77.2090), 2)
+        return cls._compute_cached_weather(lat_r, lon_r, preset)

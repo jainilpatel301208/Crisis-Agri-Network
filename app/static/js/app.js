@@ -355,20 +355,25 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Invalid format. Please select an image file (JPEG, PNG, WebP).");
       return;
     }
+    if (imagePreviewImg.src && imagePreviewImg.src.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreviewImg.src);
+    }
     selectedImageFile = file;
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      imagePreviewImg.src = evt.target.result;
-      imagePreviewBox.style.display = "block";
-      dropzone.style.display = "none";
-    };
-    reader.readAsDataURL(file);
+    // Zero-copy Blob URL avoids allocating a 20MB base64 string in memory
+    const objectUrl = URL.createObjectURL(file);
+    imagePreviewImg.src = objectUrl;
+    imagePreviewBox.style.display = "block";
+    dropzone.style.display = "none";
   }
 
   btnRemoveImage.addEventListener("click", (e) => {
     e.stopPropagation();
+    if (imagePreviewImg.src && imagePreviewImg.src.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreviewImg.src);
+    }
     selectedImageFile = null;
     imageFileInput.value = "";
+    imagePreviewImg.src = "";
     imagePreviewBox.style.display = "none";
     dropzone.style.display = "block";
   });
