@@ -1,15 +1,15 @@
-"""Main FastAPI application for Crisis Agriculture & Food Security Network."""
+"""Enterprise FastAPI application for Crisis Agriculture & Food Security Network."""
 
 import os
 from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 
 from app.config import settings
 from app.models.common import SupportedLanguage
-from app.models.request_models import TextDiagnosisRequest
+from app.models.request_models import TextDiagnosisRequest, sanitize_prompt_text
 from app.models.response_models import DualTargetDiagnosisResponse, WeatherContext
 from app.services.gemini_service import GeminiService
 from app.services.language_service import LanguageService
@@ -18,7 +18,7 @@ from app.services.weather_service import WeatherService
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Multimodal AI network connecting rural farmers to rapid crisis advisory and government food security dashboards."
+    description="Enterprise Multimodal AI Network bridging rural farmers with rapid crisis advisory and government food security dashboards."
 )
 
 # Enable CORS for cross-origin integration
@@ -33,7 +33,7 @@ app.add_middleware(
 
 @app.get("/api/health", tags=["System"])
 async def health_check():
-    """System health check endpoint."""
+    """System health check and engine capability verification."""
     return {
         "status": "HEALTHY",
         "service": settings.APP_NAME,
@@ -44,11 +44,11 @@ async def health_check():
 
 @app.get("/api/languages", tags=["Localization"])
 async def list_supported_languages():
-    """Return all 15 supported official Indic languages plus English."""
+    """Return all 15 supported official Indian languages plus English."""
     return LanguageService.get_supported_languages()
 
 
-@app.get("/api/weather/context", response_model=WeatherContext, tags=["Weather Context"])
+@app.get("/api/weather/context", response_model=WeatherContext, tags=["Telemetry"])
 async def get_weather_context(
     latitude: float = Query(28.6139, description="Farm latitude"),
     longitude: float = Query(77.2090, description="Farm longitude"),
@@ -60,28 +60,32 @@ async def get_weather_context(
 
 @app.post("/api/diagnose/image", response_model=DualTargetDiagnosisResponse, tags=["Diagnosis"])
 async def diagnose_crop_image(
-    file: UploadFile = File(..., description="Crop leaf/plant image captured by farmer"),
-    target_language: str = Form("Hindi", description="Target Indic language for farmer advisory"),
-    unstructured_text: Optional[str] = Form(None, description="Transcribed audio or farmer notes"),
+    file: UploadFile = File(..., description="Crop leaf/plant image captured by farmer or field agent"),
+    target_language: str = Form("Assamese", description="Target Indic language for farmer advisory"),
+    unstructured_text: Optional[str] = Form(None, description="Transcribed audio or farmer symptom notes"),
     latitude: float = Form(28.6139, description="Field latitude"),
     longitude: float = Form(77.2090, description="Field longitude"),
 ):
     """
     Multimodal diagnosis accepting image upload, regional language parameter, and audio transcripts.
-    Returns both accessible farmer action card and government JSON payload.
+    Returns both accessible farmer action plan and government telemetry JSON payload.
     """
-    # Validate MIME type
+    # Strict MIME type and payload validation
     if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image.")
+        raise HTTPException(status_code=400, detail="Uploaded file must be a valid image format (JPEG, PNG, WebP).")
 
     image_bytes = await file.read()
     if len(image_bytes) == 0:
-        raise HTTPException(status_code=400, detail="Empty image file received.")
+        raise HTTPException(status_code=400, detail="Empty image payload received.")
+    if len(image_bytes) > 15 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image exceeds maximum 15MB limit.")
+
+    sanitized_notes = sanitize_prompt_text(unstructured_text)
 
     response = await GeminiService.analyze_crop(
         image_bytes=image_bytes,
         image_mime_type=file.content_type,
-        unstructured_text=unstructured_text or "Diagnose crop leaf condition from image.",
+        unstructured_text=sanitized_notes or "Diagnose crop leaf pathology and provide emergency advisory.",
         target_language=target_language,
         latitude=latitude,
         longitude=longitude
@@ -106,17 +110,17 @@ async def diagnose_crop_text(payload: TextDiagnosisRequest):
 
 @app.post("/api/diagnose/sample", response_model=DualTargetDiagnosisResponse, tags=["Diagnosis"])
 async def diagnose_sample(
-    sample_id: str = Form("wheat_rust", description="Sample scenario: 'wheat_rust', 'rice_blast', 'potato_blight', or 'healthy'"),
-    target_language: str = Form("Hindi", description="Target Indic language")
+    sample_id: str = Form("wheat_rust", description="Incident preset: 'wheat_rust', 'rice_blast', 'potato_blight', 'pest_aphid', or 'healthy'"),
+    target_language: str = Form("Assamese", description="Target Indic language")
 ):
     """
-    Pre-configured diagnostic scenario for rapid demonstration, testing, and zero-latency evaluation.
+    Pre-configured incident scenario for rapid demonstration, testing, and zero-latency evaluation.
     """
     descriptions = {
         "wheat_rust": "Wheat field leaves show bright yellow-orange powder pustules in stripes. Plants are drying out.",
         "rice_blast": "Rice paddy crop has diamond-shaped brown lesions with gray centers on leaf blades and rotten collar.",
         "potato_blight": "Potato foliage shows water-soaked dark lesions with white fungal fuzz underneath in damp weather.",
-        "pest_aphid": "Leaves are curling with small green aphids clustering under stems and sticky honeydew.",
+        "pest_aphid": "Leaves are curling with aphids clustering under stems and honeydew secretions.",
         "healthy": "Lush green wheat leaves with vigorous growth and no visible fungal or pest damage."
     }
     sample_text = descriptions.get(sample_id, descriptions["wheat_rust"])
@@ -131,7 +135,7 @@ async def diagnose_sample(
     return response
 
 
-# Mount static directory for 3D Three.js frontend
+# Mount static directory for Frontend Dashboard
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
@@ -139,8 +143,8 @@ if os.path.exists(static_dir):
 
 @app.get("/", tags=["Frontend"])
 async def serve_index():
-    """Serve the 3D accessible web application."""
+    """Serve the enterprise dashboard web application."""
     index_path = os.path.join(static_dir, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return {"message": "Crisis Agriculture & Food Security Network API is running. Build frontend static files."}
+    return {"message": "Crisis Agriculture & Food Security Network API is active."}

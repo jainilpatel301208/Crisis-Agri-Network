@@ -1,25 +1,23 @@
-"""Response schemas for farmer and government dashboard dual-targets."""
+"""Response schemas for farmer action plan and enterprise government telemetry."""
 
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
 from app.models.common import SeverityLevel, PathogenCategory
 
 
-class FarmerActionCard(BaseModel):
-    """Ultra-accessible action plan designed for rural farmers with zero formal literacy."""
+class FarmerActionPlan(BaseModel):
+    """Localized, legible action plan strictly for rural farmer comprehension."""
     severity: SeverityLevel
-    severity_color: str = Field(description="Hex color code: Green (#10b981), Amber (#f59e0b), Red (#ef4444)")
-    status_headline: str = Field(description="Short 2-4 word headline in native target language")
-    primary_action_icon: str = Field(description="Large visual symbol/emoji indicating primary action")
-    simple_steps: List[str] = Field(description="Visual, numbered action steps in native target language")
-    audio_summary: str = Field(description="Spoken phonetic summary string for Text-to-Speech")
-    audio_cue: str = Field(default="alert", description="Sound signature type: 'positive', 'warning', or 'alert'")
-    do_not_list: List[str] = Field(default_factory=list, description="Things strictly to avoid in native language")
-    emergency_helpline: str = Field(default="1551", description="Farmer crisis toll-free hotline")
+    severity_badge_class: str = Field(default="danger", description="CSS badge class: success, warning, danger, critical")
+    status_headline: str = Field(description="Clear localized status headline in target language")
+    action_protocol: List[str] = Field(description="Sequential verified steps in target language")
+    audio_transcript: str = Field(description="Spoken phonetic summary for audio synthesizer")
+    restricted_practices: List[str] = Field(default_factory=list, description="Strictly prohibited toxic practices in target language")
+    emergency_extension_contact: str = Field(default="1551", description="National Farmer Emergency Helpline")
 
 
 class WeatherContext(BaseModel):
-    """Contextual microclimate and meteorological data."""
+    """Contextual microclimate and meteorological telemetry."""
     temperature_c: float
     humidity_pct: float
     precipitation_probability_pct: float
@@ -37,27 +35,51 @@ class FoodSecurityImpact(BaseModel):
     estimated_hectares_at_risk: float
 
 
-class GovernmentIncidentReport(BaseModel):
-    """Strict English JSON schema for agricultural emergency & food security dashboards."""
+class ResourceRouting(BaseModel):
+    """Government emergency logistics and field containment dispatch."""
+    containment_status: str = Field(description="CONTAINED, ACTIVE_SURVEILLANCE, RAPID_RESPONSE_REQUIRED")
+    recommended_bio_fungicide_kg: float = Field(description="Estimated organic containment inventory needed in kg")
+    field_officers_dispatched: int = Field(description="Recommended agricultural extension personnel")
+    buffer_stock_depot: str = Field(description="Nearest designated Food Corporation / emergency reserve silo")
+    priority_level: str = Field(description="LOW, MEDIUM, HIGH, CRITICAL_EMERGENCY")
+
+
+class DiseaseClassification(BaseModel):
+    """Pathology taxonomy and biological classification."""
+    crop: str
+    common_name: str
+    scientific_name: str
+    category: PathogenCategory
+    pathogen_virulence_index: float = Field(ge=0.0, le=1.0)
+
+
+class GeoCoordinates(BaseModel):
+    """Geographic positioning and agro-climatic zoning."""
+    latitude: float
+    longitude: float
+    agro_climatic_zone: str
+    district_ref: Optional[str] = "Zone 4 - Gangetic Agricultural Basin"
+
+
+class GovernmentTelemetryReport(BaseModel):
+    """Strict JSON telemetry schema for enterprise government dashboards and disaster response."""
     report_id: str
     timestamp: str
-    crop_identified: str
-    pathogen_scientific_name: str
-    pathogen_common_name: str
-    pathogen_category: PathogenCategory
-    severity_level: SeverityLevel
-    outbreak_risk_score: float = Field(ge=0.0, le=1.0, description="Outbreak index from 0.0 to 1.0")
+    severity: SeverityLevel
+    disease_classification: DiseaseClassification
+    outbreak_risk_score: float = Field(ge=0.0, le=1.0)
+    geo_coordinates: GeoCoordinates
+    weather_telemetry: WeatherContext
+    food_security_impact: FoodSecurityImpact
+    resource_routing: ResourceRouting
     verified_safe_remedies: List[str]
     prohibited_treatments: List[str]
-    weather_context: WeatherContext
-    food_security_impact: FoodSecurityImpact
-    geo_location: Dict[str, Any]
-    safety_audit_status: str = Field(default="VERIFIED_SAFE")
+    safety_audit_status: str = Field(default="VERIFIED_SAFE_ORGANIC_FIRST")
 
 
 class DualTargetDiagnosisResponse(BaseModel):
-    """Unified dual-target response containing both accessible farmer card and government report."""
+    """Enterprise dual-target response separating Farmer Action Plan and Government Telemetry."""
     success: bool = True
     target_language: str
-    farmer_view: FarmerActionCard
-    government_view: GovernmentIncidentReport
+    farmer_view: FarmerActionPlan
+    government_view: GovernmentTelemetryReport

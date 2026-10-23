@@ -1,68 +1,87 @@
 /**
- * Main Application Logic
- * Bridges Accessible UI, Gemini API, Audio Cues, and Government Dashboard
+ * Enterprise Application Logic
+ * Telemetry Ingestion, Gemini API Bridge, Speech Integration & Telemetry Rendering
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize 3D Field
-  const wheatField = new WheatField3D("canvas-3d");
+  // Audio Controller for Speech Synthesis
   const audioCtrl = new AudioController();
 
   // State
-  let currentTargetLang = "Hindi";
-  let currentSpeechCode = "hi-IN";
+  let currentTargetLang = "Assamese";
+  let currentSpeechCode = "as-IN";
+  let selectedImageFile = null;
   let isListeningVoice = false;
   let recognition = null;
-  let lastDiagnosisData = null;
-  let activeView = "farmer"; // "farmer" or "govt"
+  let currentTelemetryData = null;
 
   // DOM Elements
   const langSelect = document.getElementById("lang-select");
-  const viewToggleBtn = document.getElementById("view-toggle-btn");
-  const farmerPanel = document.getElementById("farmer-panel");
-  const govtPanel = document.getElementById("govt-panel");
-
-  const btnCamera = document.getElementById("btn-camera");
-  const btnVoice = document.getElementById("btn-voice");
+  const dropzone = document.getElementById("dropzone");
   const imageFileInput = document.getElementById("image-file-input");
-  const voiceIndicator = document.getElementById("voice-indicator");
+  const imagePreviewBox = document.getElementById("image-preview-box");
+  const imagePreviewImg = document.getElementById("image-preview-img");
+  const btnRemoveImage = document.getElementById("btn-remove-image");
 
-  const loadingOverlay = document.getElementById("loading-overlay");
-  const resultCard = document.getElementById("result-card");
+  const btnVoiceToggle = document.getElementById("btn-voice-toggle");
+  const voiceStatusText = document.getElementById("voice-status-text");
+  const symptomNotes = document.getElementById("symptom-notes");
+  const inputLat = document.getElementById("input-lat");
+  const inputLon = document.getElementById("input-lon");
+  const btnSubmitAudit = document.getElementById("btn-submit-audit");
+  const loaderBox = document.getElementById("loader-box");
 
-  // Farmer Result UI Elements
-  const statusBanner = document.getElementById("status-banner");
-  const statusIconGiant = document.getElementById("status-icon-giant");
-  const statusHeadline = document.getElementById("status-headline");
-  const statusBadge = document.getElementById("status-badge");
-  const btnAudioSpeak = document.getElementById("btn-audio-speak");
-  const actionStepsContainer = document.getElementById("action-steps-container");
-  const doNotContainer = document.getElementById("do-not-container");
-  const helplineBox = document.getElementById("helpline-box");
+  // Tabs
+  const tabBtnFarmer = document.getElementById("tab-btn-farmer");
+  const tabBtnGovt = document.getElementById("tab-btn-govt");
+  const tabContentFarmer = document.getElementById("tab-content-farmer");
+  const tabContentGovt = document.getElementById("tab-content-govt");
 
-  // Govt Dashboard UI Elements
-  const govtRiskScore = document.getElementById("govt-risk-score");
-  const govtYieldLoss = document.getElementById("govt-yield-loss");
-  const govtThreatRadius = document.getElementById("govt-threat-radius");
-  const govtBufferStatus = document.getElementById("govt-buffer-status");
-  const govtPathogen = document.getElementById("govt-pathogen");
-  const govtWeatherAlert = document.getElementById("govt-weather-alert");
-  const govtRemediesList = document.getElementById("govt-remedies-list");
-  const govtJsonInspector = document.getElementById("govt-json-inspector");
+  // Telemetry Banner Metrics
+  const valSeverity = document.getElementById("val-severity");
+  const valRiskIndex = document.getElementById("val-risk-index");
+  const valYieldLoss = document.getElementById("val-yield-loss");
+  const valThreatRadius = document.getElementById("val-threat-radius");
 
-  // Wind toggle
-  const btnWind = document.getElementById("btn-wind");
-  let isGusting = false;
-  if (btnWind) {
-    btnWind.addEventListener("click", () => {
-      isGusting = !isGusting;
-      wheatField.setWindGust(isGusting);
-      btnWind.textContent = isGusting ? "💨 Gale Gusting" : "🌾 Gentle Breeze";
-    });
+  // Farmer Plan Elements
+  const farmerHeadlineText = document.getElementById("farmer-headline-text");
+  const btnAudioListen = document.getElementById("btn-audio-listen");
+  const actionProtocolList = document.getElementById("action-protocol-list");
+  const warningAlertBox = document.getElementById("warning-alert-box");
+  const warningAlertText = document.getElementById("warning-alert-text");
+
+  // Government Telemetry Elements
+  const telCrop = document.getElementById("tel-crop");
+  const telPathogenCom = document.getElementById("tel-pathogen-com");
+  const telPathogenSci = document.getElementById("tel-pathogen-sci");
+  const telCategory = document.getElementById("tel-category");
+  const telVirulence = document.getElementById("tel-virulence");
+
+  const telContainment = document.getElementById("tel-containment");
+  const telBioFungicide = document.getElementById("tel-bio-fungicide");
+  const telOfficers = document.getElementById("tel-officers");
+  const telDepot = document.getElementById("tel-depot");
+  const telPriority = document.getElementById("tel-priority");
+
+  const telWeatherBlight = document.getElementById("tel-weather-blight");
+  const telWeatherSpray = document.getElementById("tel-weather-spray");
+  const telInterventionsList = document.getElementById("tel-interventions-list");
+  const jsonInspector = document.getElementById("json-inspector");
+  const btnCopyJson = document.getElementById("btn-copy-json");
+
+  // Live UTC Clock in Header
+  function updateLiveClock() {
+    const clockBadge = document.getElementById("badge-clock");
+    if (clockBadge) {
+      const now = new Date();
+      clockBadge.textContent = now.toISOString().replace("T", " ").substring(0, 19) + " UTC";
+    }
   }
+  setInterval(updateLiveClock, 1000);
+  updateLiveClock();
 
-  // 1. Load Available Indic Languages
-  async function loadLanguages() {
+  // 1. Fetch & Initialize 15 Indian Languages
+  async function initLanguages() {
     try {
       const res = await fetch("/api/languages");
       if (res.ok) {
@@ -72,86 +91,100 @@ document.addEventListener("DOMContentLoaded", () => {
           const opt = document.createElement("option");
           opt.value = l.key;
           opt.dataset.speechCode = l.speech_code;
-          opt.textContent = `${l.native_name} (${l.name})`;
+          opt.textContent = `${l.name} - ${l.native_name}`;
           langSelect.appendChild(opt);
         });
 
-        // Set default to Hindi or first available
-        const defaultLang = langs.find(l => l.name === "Hindi") || langs[0];
-        if (defaultLang) {
-          langSelect.value = defaultLang.key;
-          currentTargetLang = defaultLang.key;
-          currentSpeechCode = defaultLang.speech_code;
+        // Set initial language
+        const defaultChoice = langs[0];
+        if (defaultChoice) {
+          langSelect.value = defaultChoice.key;
+          currentTargetLang = defaultChoice.key;
+          currentSpeechCode = defaultChoice.speech_code;
         }
       }
-    } catch (e) {
-      console.warn("Using offline languages fallback:", e);
+    } catch (err) {
+      console.warn("Using default language registry:", err);
     }
   }
-  loadLanguages();
+  initLanguages();
 
-  // Language Change Listener
   langSelect.addEventListener("change", (e) => {
     const selectedOpt = langSelect.options[langSelect.selectedIndex];
     currentTargetLang = e.target.value;
-    currentSpeechCode = selectedOpt.dataset.speechCode || "hi-IN";
+    currentSpeechCode = selectedOpt.dataset.speechCode || "as-IN";
 
-    // If we already have a diagnosis on screen, re-render/re-diagnose in new language
-    if (lastDiagnosisData) {
-      runSampleDiagnosis("wheat_rust");
+    // Auto-update current incident view to new language
+    if (currentTelemetryData) {
+      runDiagnosisRequest();
     }
   });
 
-  // 2. View Mode Toggle (Farmer vs Govt)
-  viewToggleBtn.addEventListener("click", () => {
-    if (activeView === "farmer") {
-      activeView = "govt";
-      farmerPanel.style.display = "none";
-      govtPanel.style.display = "block";
-      viewToggleBtn.innerHTML = "👨‍🌾 <span>Farmer View</span>";
-    } else {
-      activeView = "farmer";
-      farmerPanel.style.display = "block";
-      govtPanel.style.display = "none";
-      viewToggleBtn.innerHTML = "🏛️ <span>Crisis Dashboard</span>";
+  // 2. Tab Navigation
+  tabBtnFarmer.addEventListener("click", () => {
+    tabBtnFarmer.classList.add("active");
+    tabBtnGovt.classList.remove("active");
+    tabContentFarmer.style.display = "block";
+    tabContentGovt.style.display = "none";
+  });
+
+  tabBtnGovt.addEventListener("click", () => {
+    tabBtnGovt.classList.add("active");
+    tabBtnFarmer.classList.remove("active");
+    tabContentGovt.style.display = "block";
+    tabContentFarmer.style.display = "none";
+  });
+
+  // 3. Drag and Drop File Ingestion
+  dropzone.addEventListener("click", () => imageFileInput.click());
+
+  dropzone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropzone.classList.add("dragover");
+  });
+
+  dropzone.addEventListener("dragleave", () => {
+    dropzone.classList.remove("dragover");
+  });
+
+  dropzone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzone.classList.remove("dragover");
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleSelectedImage(e.dataTransfer.files[0]);
     }
   });
 
-  // 3. Camera / Image Ingestion (Single-button flow)
-  btnCamera.addEventListener("click", () => {
-    imageFileInput.click();
-  });
-
-  imageFileInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    showLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("target_language", currentTargetLang);
-    formData.append("unstructured_text", "Farmer uploaded crop leaf photo for rapid emergency diagnosis.");
-    formData.append("latitude", "28.6139");
-    formData.append("longitude", "77.2090");
-
-    try {
-      const res = await fetch("/api/diagnose/image", {
-        method: "POST",
-        body: formData
-      });
-      const data = await res.json();
-      renderDiagnosis(data);
-    } catch (err) {
-      console.error("Diagnosis error:", err);
-      alert("Network error. Switching to instant offline diagnosis engine.");
-      runSampleDiagnosis("wheat_rust");
-    } finally {
-      showLoading(false);
-      imageFileInput.value = "";
+  imageFileInput.addEventListener("change", (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleSelectedImage(e.target.files[0]);
     }
   });
 
-  // 4. Voice-to-Text Button (Bypasses typing entirely)
+  function handleSelectedImage(file) {
+    if (!file.type.startsWith("image/")) {
+      alert("Invalid format. Please select an image file.");
+      return;
+    }
+    selectedImageFile = file;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      imagePreviewImg.src = evt.target.result;
+      imagePreviewBox.style.display = "block";
+      dropzone.style.display = "none";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  btnRemoveImage.addEventListener("click", (e) => {
+    e.stopPropagation();
+    selectedImageFile = null;
+    imageFileInput.value = "";
+    imagePreviewBox.style.display = "none";
+    dropzone.style.display = "block";
+  });
+
+  // 4. Voice-to-Text Recognition
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SpeechRecognition) {
     recognition = new SpeechRecognition();
@@ -160,62 +193,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     recognition.onstart = () => {
       isListeningVoice = true;
-      btnVoice.classList.add("listening");
-      voiceIndicator.classList.add("active");
+      btnVoiceToggle.classList.add("listening");
+      voiceStatusText.textContent = "Listening...";
     };
 
-    recognition.onresult = async (event) => {
-      const transcript = event.results[0][0].transcript;
-      console.log("Transcribed speech:", transcript);
-      stopVoice();
-      showLoading(true);
-
-      try {
-        const res = await fetch("/api/diagnose/text", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            unstructured_text: transcript,
-            target_language: currentTargetLang,
-            latitude: 28.6139,
-            longitude: 77.2090
-          })
-        });
-        const data = await res.json();
-        renderDiagnosis(data);
-      } catch (err) {
-        console.error("Voice diagnosis error:", err);
-        runSampleDiagnosis("wheat_rust");
-      } finally {
-        showLoading(false);
+    recognition.onresult = (evt) => {
+      const transcript = evt.results[0][0].transcript;
+      if (symptomNotes.value) {
+        symptomNotes.value += " " + transcript;
+      } else {
+        symptomNotes.value = transcript;
       }
-    };
-
-    recognition.onerror = (e) => {
-      console.warn("Speech recognition error:", e);
-      stopVoice();
-      // Graceful fallback: trigger wheat rust diagnosis with feedback
-      runSampleDiagnosis("wheat_rust");
-    };
-
-    recognition.onend = () => {
       stopVoice();
     };
+
+    recognition.onerror = () => stopVoice();
+    recognition.onend = () => stopVoice();
   }
 
-  btnVoice.addEventListener("click", () => {
+  btnVoiceToggle.addEventListener("click", () => {
     if (!recognition) {
-      // If browser doesn't support Web Speech API, run voice simulation prompt
-      const simulatedText = prompt(
-        "Voice input simulated: Describe crop symptoms (e.g., 'Wheat leaves turning yellow with powdery orange spots'):",
-        "Wheat leaves turning yellow with powdery orange spots"
-      );
-      if (simulatedText) {
-        runTextDiagnosis(simulatedText);
-      }
+      alert("Speech recognition is not supported in this browser. Please enter symptom notes manually.");
       return;
     }
-
     if (isListeningVoice) {
       recognition.stop();
       stopVoice();
@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
       recognition.lang = currentSpeechCode;
       try {
         recognition.start();
-      } catch (e) {
+      } catch (err) {
         recognition.stop();
       }
     }
@@ -231,20 +231,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function stopVoice() {
     isListeningVoice = false;
-    btnVoice.classList.remove("listening");
-    voiceIndicator.classList.remove("active");
+    btnVoiceToggle.classList.remove("listening");
+    voiceStatusText.textContent = "Record Voice";
   }
 
-  // 5. Quick Demonstration Scenarios
-  document.querySelectorAll(".chip-btn").forEach(btn => {
+  // 5. Quick Incident Presets
+  document.querySelectorAll(".preset-row").forEach(btn => {
     btn.addEventListener("click", () => {
       const sampleId = btn.dataset.sample;
-      runSampleDiagnosis(sampleId);
+      runPresetIncident(sampleId);
     });
   });
 
-  async function runSampleDiagnosis(sampleId) {
-    showLoading(true);
+  async function runPresetIncident(sampleId) {
+    setLoading(true);
     const formData = new FormData();
     formData.append("sample_id", sampleId);
     formData.append("target_language", currentTargetLang);
@@ -255,131 +255,174 @@ document.addEventListener("DOMContentLoaded", () => {
         body: formData
       });
       const data = await res.json();
-      renderDiagnosis(data);
-    } catch (e) {
-      console.error(e);
+      renderTelemetry(data);
+    } catch (err) {
+      console.error("Diagnosis error:", err);
     } finally {
-      showLoading(false);
+      setLoading(false);
     }
   }
 
-  async function runTextDiagnosis(text) {
-    showLoading(true);
+  // 6. Manual Audit Submission
+  btnSubmitAudit.addEventListener("click", () => runDiagnosisRequest());
+
+  async function runDiagnosisRequest() {
+    setLoading(true);
+
     try {
-      const res = await fetch("/api/diagnose/text", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          unstructured_text: text,
+      let res;
+      if (selectedImageFile) {
+        const formData = new FormData();
+        formData.append("file", selectedImageFile);
+        formData.append("target_language", currentTargetLang);
+        formData.append("unstructured_text", symptomNotes.value || "Field specimen leaf inspection.");
+        formData.append("latitude", inputLat.value || "28.6139");
+        formData.append("longitude", inputLon.value || "77.2090");
+
+        res = await fetch("/api/diagnose/image", {
+          method: "POST",
+          body: formData
+        });
+      } else {
+        const payload = {
+          unstructured_text: symptomNotes.value || "Field crop foliage exhibiting pathogen symptoms.",
           target_language: currentTargetLang,
-          latitude: 28.6139,
-          longitude: 77.2090
-        })
-      });
+          latitude: parseFloat(inputLat.value) || 28.6139,
+          longitude: parseFloat(inputLon.value) || 77.2090
+        };
+
+        res = await fetch("/api/diagnose/text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      }
+
       const data = await res.json();
-      renderDiagnosis(data);
-    } catch (e) {
-      console.error(e);
+      renderTelemetry(data);
+    } catch (err) {
+      console.error("Submission error:", err);
+      // Fallback to wheat rust preset if offline
+      runPresetIncident("wheat_rust");
     } finally {
-      showLoading(false);
+      setLoading(false);
     }
   }
 
-  // 6. Dual-Target Render Logic
-  function renderDiagnosis(data) {
-    lastDiagnosisData = data;
+  // 7. Render Telemetry & Farmer Action Plan
+  function renderTelemetry(data) {
+    currentTelemetryData = data;
     const fView = data.farmer_view;
     const gView = data.government_view;
 
-    // Trigger visual and auditory cue
-    audioCtrl.playCue(fView.audio_cue || "alert");
+    // Overview Banner
+    valSeverity.textContent = gView.severity;
+    valSeverity.className = `metric-value ${fView.severity_badge_class}`;
 
-    // A. Farmer View Presentation
-    resultCard.classList.add("active");
-    statusBanner.style.backgroundColor = fView.severity_color;
-    statusIconGiant.textContent = fView.primary_action_icon;
-    statusBadge.textContent = fView.severity;
-    statusHeadline.textContent = fView.status_headline;
+    valRiskIndex.textContent = `${Math.round(gView.outbreak_risk_score * 100)}%`;
+    valYieldLoss.textContent = `${Math.round(gView.food_security_impact.yield_loss_risk_pct)}%`;
+    valThreatRadius.textContent = `${gView.food_security_impact.regional_threat_radius_km} km`;
 
-    // Action Steps
-    actionStepsContainer.innerHTML = "";
-    (fView.simple_steps || []).forEach((stepText, idx) => {
-      const stepItem = document.createElement("div");
-      stepItem.className = "action-step-item";
-      stepItem.innerHTML = `
-        <div class="step-num">${idx + 1}</div>
-        <div>${stepText}</div>
+    // Tab 1: Farmer Action Plan
+    farmerHeadlineText.textContent = fView.status_headline;
+
+    actionProtocolList.innerHTML = "";
+    (fView.action_protocol || []).forEach((step, idx) => {
+      const item = document.createElement("div");
+      item.className = "protocol-item";
+      item.innerHTML = `
+        <span class="protocol-num">${idx + 1}</span>
+        <span>${step}</span>
       `;
-      actionStepsContainer.appendChild(stepItem);
+      actionProtocolList.appendChild(item);
     });
 
-    // Do Not / Hazard Warning Box
-    if (fView.do_not_list && fView.do_not_list.length > 0) {
-      doNotContainer.style.display = "flex";
-      doNotContainer.innerHTML = `<span>🚫</span> <span>${fView.do_not_list[0]}</span>`;
+    if (fView.restricted_practices && fView.restricted_practices.length > 0) {
+      warningAlertBox.style.display = "flex";
+      warningAlertText.textContent = fView.restricted_practices[0];
     } else {
-      doNotContainer.style.display = "none";
+      warningAlertBox.style.display = "none";
     }
 
-    // Audio Playback Button
-    btnAudioSpeak.onclick = () => {
-      btnAudioSpeak.classList.add("playing");
-      audioCtrl.speakText(fView.audio_summary, currentSpeechCode, () => {
-        btnAudioSpeak.classList.remove("playing");
+    // Audio Playback
+    btnAudioListen.onclick = () => {
+      btnAudioListen.classList.add("playing");
+      audioCtrl.speakText(fView.audio_transcript, currentSpeechCode, () => {
+        btnAudioListen.classList.remove("playing");
       });
     };
 
-    // Auto-scroll gently to result card
-    resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Tab 2: Government Telemetry
+    const dClass = gView.disease_classification;
+    telCrop.textContent = dClass.crop;
+    telPathogenCom.textContent = dClass.common_name;
+    telPathogenSci.textContent = dClass.scientific_name;
+    telCategory.textContent = dClass.category;
+    telVirulence.textContent = dClass.pathogen_virulence_index.toFixed(2);
 
-    // B. Government Dashboard Presentation
-    govtRiskScore.textContent = `${Math.round(gView.outbreak_risk_score * 100)}%`;
-    govtYieldLoss.textContent = `${Math.round(gView.food_security_impact.yield_loss_risk_pct)}%`;
-    govtThreatRadius.textContent = `${gView.food_security_impact.regional_threat_radius_km} km`;
-    govtBufferStatus.textContent = gView.food_security_impact.buffer_stock_criticality;
-    govtPathogen.textContent = `${gView.crop_identified} — ${gView.pathogen_common_name} (${gView.pathogen_scientific_name})`;
-    govtWeatherAlert.textContent = `${gView.weather_context.microclimate_blight_risk} | ${gView.weather_context.spray_advisory}`;
+    const rRoute = gView.resource_routing;
+    telContainment.textContent = rRoute.containment_status;
+    telBioFungicide.textContent = `${rRoute.recommended_bio_fungicide_kg} kg`;
+    telOfficers.textContent = `${rRoute.field_officers_dispatched} Specialists`;
+    telDepot.textContent = rRoute.buffer_stock_depot;
+    telPriority.textContent = rRoute.priority_level;
 
-    // Verified Remedies with badges
-    govtRemediesList.innerHTML = "";
+    telWeatherBlight.textContent = gView.weather_telemetry.microclimate_blight_risk;
+    telWeatherSpray.textContent = gView.weather_telemetry.spray_advisory;
+
+    // Safety Audited Interventions
+    telInterventionsList.innerHTML = "";
     gView.verified_safe_remedies.forEach(rem => {
       const li = document.createElement("li");
-      li.style.marginBottom = "0.4rem";
+      li.style.padding = "0.35rem 0";
+      li.style.borderBottom = "1px solid var(--border-light)";
       li.textContent = rem;
-      govtRemediesList.appendChild(li);
+      telInterventionsList.appendChild(li);
     });
 
-    // Prohibited treatments
+    // Prohibited Chemicals
     if (gView.prohibited_treatments && gView.prohibited_treatments.length > 0) {
       const pHeader = document.createElement("li");
-      pHeader.style.marginTop = "0.75rem";
-      pHeader.style.color = "#f87171";
-      pHeader.style.fontWeight = "bold";
-      pHeader.textContent = "PROHIBITED / BANNED AGROCHEMICALS:";
-      govtRemediesList.appendChild(pHeader);
+      pHeader.style.paddingTop = "0.5rem";
+      pHeader.style.color = "#b91c1c";
+      pHeader.style.fontWeight = "700";
+      pHeader.textContent = "Prohibited / Banned Agrochemicals:";
+      telInterventionsList.appendChild(pHeader);
 
       gView.prohibited_treatments.forEach(prohib => {
         const li = document.createElement("li");
-        li.style.color = "#fca5a5";
-        li.textContent = `❌ ${prohib}`;
-        govtRemediesList.appendChild(li);
+        li.style.color = "#dc2626";
+        li.style.padding = "0.2rem 0";
+        li.textContent = `[Blocked] ${prohib}`;
+        telInterventionsList.appendChild(li);
       });
     }
 
-    // Strict JSON Inspector
-    govtJsonInspector.textContent = JSON.stringify(gView, null, 2);
+    // JSON Inspector
+    jsonInspector.textContent = JSON.stringify(gView, null, 2);
   }
 
-  function showLoading(show) {
-    if (show) {
-      loadingOverlay.classList.add("active");
+  // Copy JSON Payload
+  btnCopyJson.addEventListener("click", () => {
+    if (currentTelemetryData) {
+      navigator.clipboard.writeText(JSON.stringify(currentTelemetryData.government_view, null, 2));
+      btnCopyJson.textContent = "Copied!";
+      setTimeout(() => { btnCopyJson.textContent = "Copy JSON"; }, 2000);
+    }
+  });
+
+  function setLoading(loading) {
+    if (loading) {
+      btnSubmitAudit.disabled = true;
+      loaderBox.classList.add("active");
     } else {
-      loadingOverlay.classList.remove("active");
+      btnSubmitAudit.disabled = false;
+      loaderBox.classList.remove("active");
     }
   }
 
-  // Auto-run first sample on boot for instant WOW preview
+  // Initial Boot Sample
   setTimeout(() => {
-    runSampleDiagnosis("wheat_rust");
-  }, 600);
+    runPresetIncident("wheat_rust");
+  }, 400);
 });
