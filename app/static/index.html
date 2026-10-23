@@ -69,11 +69,6 @@
             <option value="English" selected>English</option>
           </select>
         </div>
-
-        <div class="system-status-indicator" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); padding: 0.5rem 0.65rem; border-radius: 6px;">
-          <span class="status-dot"></span>
-          <span style="color: #4ade80; font-weight: 600;">Gemini 2.5 Flash: Connected</span>
-        </div>
       </div>
     </aside>
 
@@ -230,25 +225,44 @@
         <!-- Right Column: Results & Dual-Target Telemetry -->
         <section class="output-panel">
 
-          <!-- Telemetry Summary Banner -->
-          <div class="telemetry-banner">
-            <div class="telemetry-metric">
-              <div class="metric-label">Severity Level</div>
-              <div class="metric-value" id="val-severity" style="color: #b91c1c;">--</div>
+          <!-- Initial Empty State (Awaiting Ingestion) -->
+          <div class="card" id="empty-state-card" style="text-align: center; padding: 3.5rem 1.5rem;">
+            <div style="width: 56px; height: 56px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; color: var(--text-muted);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
             </div>
-            <div class="telemetry-metric">
-              <div class="metric-label">Outbreak Risk Index</div>
-              <div class="metric-value" id="val-risk-index" style="color: #b45309;">--%</div>
-            </div>
-            <div class="telemetry-metric">
-              <div class="metric-label">Harvest Loss Risk</div>
-              <div class="metric-value" id="val-yield-loss" style="color: #0284c7;">--%</div>
-            </div>
-            <div class="telemetry-metric">
-              <div class="metric-label">Spread Radius</div>
-              <div class="metric-value" id="val-threat-radius">-- km</div>
-            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+              Awaiting Field Specimen Ingestion
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 440px; margin: 0 auto 1.5rem; line-height: 1.5;">
+              Upload a crop leaf specimen image or select an incident preset on the left, then click <strong>"Execute Multimodal Pathology Audit"</strong> to generate the localized farmer action plan and government telemetry.
+            </p>
           </div>
+
+          <!-- Dynamic Telemetry Results Container (Displayed upon audit) -->
+          <div id="telemetry-results-container" style="display: none; flex-direction: column; gap: 1.25rem;">
+
+            <!-- Telemetry Summary Banner -->
+            <div class="telemetry-banner">
+              <div class="telemetry-metric">
+                <div class="metric-label">Severity Level</div>
+                <div class="metric-value" id="val-severity" style="color: #b91c1c;">--</div>
+              </div>
+              <div class="telemetry-metric">
+                <div class="metric-label">Outbreak Risk Index</div>
+                <div class="metric-value" id="val-risk-index" style="color: #b45309;">--%</div>
+              </div>
+              <div class="telemetry-metric">
+                <div class="metric-label">Harvest Loss Risk</div>
+                <div class="metric-value" id="val-yield-loss" style="color: #0284c7;">--%</div>
+              </div>
+              <div class="telemetry-metric">
+                <div class="metric-label">Spread Radius</div>
+                <div class="metric-value" id="val-threat-radius">-- km</div>
+              </div>
+            </div>
 
           <!-- Specimen Visual Analysis Card -->
           <div class="card" id="visual-specimen-card" style="padding: 1rem; border-left: 4px solid var(--telemetry-blue);">
@@ -295,7 +309,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
                 </svg>
-                <span>System Telemetry & Telemetry JSON</span>
+                <span>Government Telemetry Feed</span>
               </button>
             </div>
 
@@ -384,20 +398,11 @@
                 </ul>
               </div>
 
-              <!-- Raw Telemetry JSON Inspector -->
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                  <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Normalized Telemetry JSON Payload</span>
-                </div>
-                <div style="position: relative;">
-                  <pre class="code-inspector" id="json-inspector">{}</pre>
-                  <button type="button" class="copy-json-btn" id="btn-copy-json">Copy JSON</button>
-                </div>
               </div>
-
             </div>
 
           </div>
+          </div> <!-- Close telemetry-results-container -->
 
         </section>
 

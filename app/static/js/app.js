@@ -89,8 +89,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const telWeatherBlight = document.getElementById("tel-weather-blight");
   const telWeatherSpray = document.getElementById("tel-weather-spray");
   const telInterventionsList = document.getElementById("tel-interventions-list");
-  const jsonInspector = document.getElementById("json-inspector");
-  const btnCopyJson = document.getElementById("btn-copy-json");
+  const emptyStateCard = document.getElementById("empty-state-card");
+  const telemetryResultsContainer = document.getElementById("telemetry-results-container");
 
 
   // Live UTC Clock in Header
@@ -377,6 +377,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 9. Render Telemetry & Specimen Visual Diagnostics
   function renderTelemetry(data) {
+    if (!data) return;
+    if (emptyStateCard) emptyStateCard.style.display = "none";
+    if (telemetryResultsContainer) telemetryResultsContainer.style.display = "flex";
+
     currentTelemetryData = data;
     const fView = data.farmer_view;
     const gView = data.government_view;
@@ -472,20 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
         telInterventionsList.appendChild(li);
       });
     }
-
-    // JSON Inspector
-    jsonInspector.textContent = JSON.stringify(gView, null, 2);
   }
-
-  // Copy JSON Payload
-  btnCopyJson.addEventListener("click", () => {
-    if (currentTelemetryData) {
-      navigator.clipboard.writeText(JSON.stringify(currentTelemetryData.government_view, null, 2));
-      btnCopyJson.textContent = "Copied!";
-      setTimeout(() => { btnCopyJson.textContent = "Copy JSON"; }, 2000);
-    }
-  });
-
 
   function setLoading(loading) {
     if (loading) {
@@ -497,8 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Initial Boot in English
-  setTimeout(() => {
-    runPresetIncident("wheat_rust");
-  }, 400);
+  // Initial State: Waiting for specimen ingestion (Never show CRITICAL on startup)
+  if (emptyStateCard) emptyStateCard.style.display = "block";
+  if (telemetryResultsContainer) telemetryResultsContainer.style.display = "none";
 });

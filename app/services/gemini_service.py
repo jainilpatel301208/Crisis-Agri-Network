@@ -1,5 +1,6 @@
 """Gemini Multimodal API integration with computer vision pixel analysis and enterprise telemetry routing."""
 
+import asyncio
 import io
 import json
 import logging
@@ -229,18 +230,41 @@ Return ONLY valid JSON.
             )
         contents.append(prompt_text)
 
-        response = client.models.generate_content(
-            model=settings.GEMINI_MODEL,
-            contents=contents,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                response_mime_type="application/json",
-                temperature=0.1,
-            )
-        )
+        candidate_models = [settings.GEMINI_MODEL, "gemini-3.8-flash", "gemini-2.5-flash", "gemini-1.5-flash"]
+        candidate_models = list(dict.fromkeys(candidate_models))
 
-        response_text = response.text or "{}"
-        return json.loads(response_text)
+        last_exc = None
+        for model_name in candidate_models:
+            try:
+                def _invoke():
+                    return client.models.generate_content(
+                        model=model_name,
+                        contents=contents,
+                        config=types.GenerateContentConfig(
+                            system_instruction=SYSTEM_PROMPT,
+                            response_mime_type="application/json",
+                            temperature=0.1,
+                        )
+                    )
+                response = await asyncio.wait_for(asyncio.to_thread(_invoke), timeout=12.0)
+                response_text = response.text or "{}"
+                clean_text = response_text.strip()
+                if clean_text.startswith("```json"):
+                    clean_text = clean_text[7:]
+                if clean_text.startswith("```"):
+                    clean_text = clean_text[3:]
+                if clean_text.endswith("```"):
+                    clean_text = clean_text[:-3]
+                clean_text = clean_text.strip()
+                return json.loads(clean_text)
+            except Exception as exc:
+                logger.warning("Gemini model %s call failed (%s). Trying next candidate.", model_name, exc)
+                last_exc = exc
+                continue
+
+        if last_exc:
+            raise last_exc
+        return {}
 
     @classmethod
     def _expert_fallback_diagnosis(
@@ -253,24 +277,31 @@ Return ONLY valid JSON.
     ) -> Dict[str, Any]:
         """
         High-fidelity deterministic expert pathology engine.
-        Identifies rust, blast, blight, aphids, or healthy states based on visual analysis and input text.
+        Dynamically adapts crop, pathogen, and severity to computer vision pixel metrics and text symptoms.
         """
         text_lower = (unstructured_text or "").lower()
 
-        # Check visual pixel metrics if available
-        has_rust_pixels = visual_analysis and visual_analysis.rust_pustule_pct > 14.0
-        has_blight_pixels = visual_analysis and visual_analysis.blight_necrosis_pct > 12.0
-        has_healthy_pixels = visual_analysis and visual_analysis.healthy_canopy_pct > 65.0 and visual_analysis.rust_pustule_pct < 8.0 and visual_analysis.blight_necrosis_pct < 8.0
+        # Visual pixel metrics
+        rust_pct = visual_analysis.rust_pustule_pct if visual_analysis else 0.0
+        blight_pct = visual_analysis.blight_necrosis_pct if visual_analysis else 0.0
+        healthy_pct = visual_analysis.healthy_canopy_pct if visual_analysis else 0.0
 
-        # Heuristic Routing
+        has_healthy_pixels = visual_analysis and (
+            healthy_pct >= 40.0 or (healthy_pct > rust_pct and healthy_pct > blight_pct)
+        ) and rust_pct < 10.0 and blight_pct < 10.0
+
+        has_blight_pixels = visual_analysis and (blight_pct >= 10.0 or (blight_pct > rust_pct and blight_pct > healthy_pct))
+        has_rust_pixels = visual_analysis and (rust_pct >= 10.0 or (rust_pct > blight_pct and rust_pct > healthy_pct))
+
+        # Heuristic Dynamic Routing
         if has_healthy_pixels or any(w in text_lower for w in ["healthy", "normal", "resilient", "green leaf"]):
-            crop = "Field Crop Specimen"
-            pathogen_sci = "None (Asymptomatic)"
+            crop = "Field Crop Specimen (Healthy Foliage)"
+            pathogen_sci = "None (Asymptomatic Leaf Tissue)"
             pathogen_com = "Verified Healthy Foliage"
             category = "HEALTHY"
-            virulence = 0.05
+            virulence = 0.0
             severity = SeverityLevel.SAFE
-            outbreak_score = 0.08
+            outbreak_score = 0.05
             yield_loss = 0.0
             radius = 0.0
             criticality = "NORMAL"
@@ -315,11 +346,12 @@ Return ONLY valid JSON.
                 pathogen_com = "Late Blight (Water-Soaked Necrosis)"
                 category = "FUNGAL"
                 virulence = 0.92
-                severity = SeverityLevel.CRITICAL
-                outbreak_score = 0.91
-                yield_loss = 55.0
-                radius = 40.0
-                criticality = "EMERGENCY_MOBILIZATION"
+                is_severe_blight = blight_pct > 20.0 or visual_analysis is None or "late blight" in text_lower or "rot" in text_lower
+                severity = SeverityLevel.CRITICAL if is_severe_blight else SeverityLevel.DANGER
+                outbreak_score = 0.91 if is_severe_blight else 0.76
+                yield_loss = 55.0 if is_severe_blight else 30.0
+                radius = 40.0 if is_severe_blight else 25.0
+                criticality = "EMERGENCY_MOBILIZATION" if is_severe_blight else "VULNERABLE"
                 routing = {
                     "containment_status": "RAPID_RESPONSE_REQUIRED",
                     "recommended_bio_fungicide_kg": 600.0,
@@ -355,15 +387,14 @@ Return ONLY valid JSON.
                 "Foliar spray of 10,000 ppm Azadirachtin / Neem extract (2ml/L)",
                 "Conserve natural predatory ladybird beetles"
             ]
-        else:
-            # Default or Rust detection
+        elif has_rust_pixels or any(w in text_lower for w in ["rust", "stripe", "pustule", "yellow rust", "wheat"]):
             crop = "Wheat (Triticum aestivum)"
             pathogen_sci = "Puccinia striiformis f. sp. tritici"
             pathogen_com = "Wheat Stripe / Yellow Rust"
             category = "FUNGAL"
             virulence = 0.85
-            severity = SeverityLevel.CRITICAL if weather.humidity_pct > 75 else SeverityLevel.DANGER
-            outbreak_score = 0.88 if weather.humidity_pct > 75 else 0.74
+            severity = SeverityLevel.CRITICAL if (weather.humidity_pct > 75 or rust_pct > 20.0) else SeverityLevel.DANGER
+            outbreak_score = 0.88 if severity == SeverityLevel.CRITICAL else 0.74
             yield_loss = 42.0
             radius = 35.0
             criticality = "EMERGENCY_MOBILIZATION" if severity == SeverityLevel.CRITICAL else "VULNERABLE"
@@ -378,6 +409,29 @@ Return ONLY valid JSON.
                 "Apply 5% Neem Seed Kernel Extract (NSKE) at early pustule onset",
                 "Foliar spray of Trichoderma viride bio-fungicide (5g/L)",
                 "Avoid spraying during high wind velocity"
+            ]
+        else:
+            # Generic specimen with no severe lesions detected
+            crop = "Field Crop Specimen (Canopy Scan)"
+            pathogen_sci = "None (Asymptomatic Leaf Tissue)"
+            pathogen_com = "Verified Healthy Foliage"
+            category = "HEALTHY"
+            virulence = 0.05
+            severity = SeverityLevel.SAFE
+            outbreak_score = 0.08
+            yield_loss = 0.0
+            radius = 0.0
+            criticality = "NORMAL"
+            routing = {
+                "containment_status": "CONTAINED",
+                "recommended_bio_fungicide_kg": 0.0,
+                "field_officers_dispatched": 0,
+                "buffer_stock_depot": "Regional Agricultural Storage",
+                "priority_level": "LOW"
+            }
+            proposed = [
+                "Maintain standard crop rotation and nutrient regime",
+                "Conduct routine bi-weekly leaf inspections"
             ]
 
         vocab = LanguageService.get_localized_pack(target_language)

@@ -2,6 +2,7 @@
 
 import pytest
 from unittest.mock import patch
+from app.config import settings
 from app.services.gemini_service import GeminiService
 from app.models.common import SeverityLevel, PathogenCategory
 from app.models.request_models import sanitize_prompt_text
@@ -17,8 +18,9 @@ def test_sanitize_prompt_text():
 
 
 @pytest.mark.asyncio
-async def test_expert_fallback_wheat_rust():
+async def test_expert_fallback_wheat_rust(monkeypatch):
     """Test expert fallback engine detecting Wheat Yellow Rust."""
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", "")
     response = await GeminiService.analyze_crop(
         image_bytes=None,
         unstructured_text="The wheat leaves are covered in powdery yellow rust pustule lines.",
@@ -33,8 +35,9 @@ async def test_expert_fallback_wheat_rust():
 
 
 @pytest.mark.asyncio
-async def test_expert_fallback_potato_blight():
+async def test_expert_fallback_potato_blight(monkeypatch):
     """Test expert fallback engine detecting Potato Late Blight."""
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", "")
     response = await GeminiService.analyze_crop(
         image_bytes=None,
         unstructured_text="Potato plant leaves turning black with water-soaked rot and white mold.",

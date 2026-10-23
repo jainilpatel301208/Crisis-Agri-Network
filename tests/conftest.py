@@ -8,8 +8,10 @@ from app.models.response_models import WeatherContext
 
 
 @pytest.fixture
-def client():
+def client(monkeypatch):
     """Synchronous test client fixture for FastAPI endpoints."""
+    from app.config import settings
+    monkeypatch.setattr(settings, "GEMINI_API_KEY", "")
     with TestClient(app) as test_client:
         yield test_client
 
