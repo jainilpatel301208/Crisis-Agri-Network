@@ -79,13 +79,26 @@
           <h2 id="stage-header-title">Emergency Agronomic Surveillance & Telemetry Feed</h2>
         </div>
         <div class="header-badges">
+          <!-- Contrast Mode Toggle -->
+          <div class="theme-switch-group" role="group" aria-label="Display Contrast Selection">
+            <button type="button" id="btn-theme-normal" class="theme-pill-btn active" data-i18n="theme_normal">Normal</button>
+            <button type="button" id="btn-theme-contrast" class="theme-pill-btn" data-i18n="theme_contrast">High Contrast</button>
+          </div>
+
           <span class="pill-badge">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
             </svg>
             <span data-i18n="food_security_cell">Food Security Cell</span>
           </span>
-          <span class="pill-badge" id="badge-clock" data-i18n="utc_live">UTC Live</span>
+
+          <span class="pill-badge" id="badge-clock" style="font-family: monospace; font-size: 0.75rem;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span id="clock-text">IST Live</span>
+          </span>
         </div>
       </header>
 

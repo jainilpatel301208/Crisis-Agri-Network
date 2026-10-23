@@ -92,12 +92,66 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyStateCard = document.getElementById("empty-state-card");
   const telemetryResultsContainer = document.getElementById("telemetry-results-container");
 
-  // Live UTC Clock in Header
+  // Contrast Theme Elements
+  const btnThemeNormal = document.getElementById("btn-theme-normal");
+  const btnThemeContrast = document.getElementById("btn-theme-contrast");
+  const clockText = document.getElementById("clock-text");
+
+  // Contrast Theme Switcher
+  function setTheme(theme) {
+    if (theme === "high-contrast") {
+      document.body.classList.add("high-contrast");
+      if (btnThemeContrast) btnThemeContrast.classList.add("active");
+      if (btnThemeNormal) btnThemeNormal.classList.remove("active");
+      localStorage.setItem("crisis_agri_theme", "high-contrast");
+    } else {
+      document.body.classList.remove("high-contrast");
+      if (btnThemeNormal) btnThemeNormal.classList.add("active");
+      if (btnThemeContrast) btnThemeContrast.classList.remove("active");
+      localStorage.setItem("crisis_agri_theme", "normal");
+    }
+  }
+
+  if (btnThemeNormal) {
+    btnThemeNormal.addEventListener("click", () => setTheme("normal"));
+  }
+  if (btnThemeContrast) {
+    btnThemeContrast.addEventListener("click", () => setTheme("high-contrast"));
+  }
+
+  // Restore saved theme preference
+  const savedTheme = localStorage.getItem("crisis_agri_theme") || "normal";
+  setTheme(savedTheme);
+
+  // Live Indian Standard Time (IST, UTC+5:30) Clock
   function updateLiveClock() {
-    const clockBadge = document.getElementById("badge-clock");
-    if (clockBadge) {
+    if (clockText) {
       const now = new Date();
-      clockBadge.textContent = now.toISOString().replace("T", " ").substring(0, 19) + " UTC";
+      try {
+        const options = {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false
+        };
+        const formatter = new Intl.DateTimeFormat("en-GB", options);
+        const formatted = formatter.format(now).replace(",", "");
+        clockText.textContent = `${formatted} IST`;
+      } catch (e) {
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const istDate = new Date(utc + (3600000 * 5.5));
+        const y = istDate.getFullYear();
+        const m = String(istDate.getMonth() + 1).padStart(2, "0");
+        const d = String(istDate.getDate()).padStart(2, "0");
+        const hh = String(istDate.getHours()).padStart(2, "0");
+        const mm = String(istDate.getMinutes()).padStart(2, "0");
+        const ss = String(istDate.getSeconds()).padStart(2, "0");
+        clockText.textContent = `${d}/${m}/${y} ${hh}:${mm}:${ss} IST`;
+      }
     }
   }
   setInterval(updateLiveClock, 1000);

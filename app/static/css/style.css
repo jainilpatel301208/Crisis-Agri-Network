@@ -789,3 +789,206 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Contrast Switch Controls */
+.theme-switch-group {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.theme-pill-btn {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.theme-pill-btn:hover {
+  color: var(--text-primary);
+}
+
+.theme-pill-btn.active {
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+/* ==========================================================================
+   HIGH CONTRAST THEME (Optimized for Outdoor Sunlight & High Visibility)
+   ========================================================================== */
+body.high-contrast {
+  --bg-app: #ffffff;
+  --bg-sidebar: #000000;
+  --bg-card: #ffffff;
+  --bg-muted: #f4f4f4;
+  --bg-accent: #ffffff;
+
+  --border-light: #000000;
+  --border-subtle: #000000;
+  --border-dark: #000000;
+
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #111111;
+  --text-inverse: #ffffff;
+
+  --forest-green: #0a4d22;
+  --forest-green-hover: #052e14;
+  --forest-green-light: #d1fae5;
+  
+  --telemetry-blue: #0369a1;
+  --telemetry-blue-light: #bae6fd;
+}
+
+body.high-contrast .top-app-header {
+  border-bottom: 2px solid #000000;
+  background: #ffffff;
+}
+
+body.high-contrast .theme-switch-group {
+  border: 2px solid #000000;
+  background: #ffffff;
+}
+
+body.high-contrast .theme-pill-btn {
+  color: #000000;
+  font-weight: 700;
+}
+
+body.high-contrast .theme-pill-btn.active {
+  background: #000000;
+  color: #ffff00; /* High visibility yellow on black */
+}
+
+body.high-contrast .card {
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
+}
+
+body.high-contrast .telemetry-banner {
+  border: 2px solid #000000 !important;
+  background: #ffffff !important;
+}
+
+body.high-contrast .telemetry-metric {
+  border-right: 2px solid #000000 !important;
+}
+
+body.high-contrast .metric-label {
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+body.high-contrast .metric-value {
+  font-weight: 900 !important;
+}
+
+body.high-contrast .pill-badge {
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+  background: #ffffff !important;
+}
+
+body.high-contrast .btn-primary-action {
+  background: #000000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #000000 !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+}
+
+body.high-contrast .btn-primary-action:hover {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+body.high-contrast .dropzone {
+  border: 3px dashed #000000 !important;
+  background: #fafafa !important;
+}
+
+body.high-contrast .dropzone-text {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+body.high-contrast .textarea-enterprise,
+body.high-contrast .select-enterprise {
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+body.high-contrast .tab-btn {
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+body.high-contrast .tab-btn.active {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+body.high-contrast .telemetry-table th,
+body.high-contrast .telemetry-table td {
+  border-bottom: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+body.high-contrast .preset-row {
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+body.high-contrast .farmer-view-card {
+  border: 2px solid #000000 !important;
+}
+
+body.high-contrast .farmer-headline {
+  color: #000000 !important;
+  font-weight: 900 !important;
+}
+
+body.high-contrast .action-protocol-list .protocol-item {
+  border: 2px solid #000000 !important;
+  border-left: 6px solid #000000 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+body.high-contrast .warning-alert-box {
+  background: #fef08a !important; /* Vivid warning yellow */
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+body.high-contrast .helpline-footer {
+  border: 2px solid #000000 !important;
+  background: #ffffff !important;
+}
+
+body.high-contrast .helpline-tel-btn {
+  background: #000000 !important;
+  color: #ffff00 !important;
+  font-weight: 800 !important;
+}
+
