@@ -77,6 +77,162 @@ You MUST output your response in strict JSON adhering to this schema:
   }
 }
 """
+MAJOR_FCI_DEPOTS = [
+    # Northern Sector (Delhi, Punjab, Haryana, HP, J&K)
+    {
+        "name": "FCI Central Silo Complex - Narela, Delhi (Northern Sector)",
+        "lat": 28.8530, "lon": 77.0930,
+        "zone": "Trans-Gangetic Plains (Delhi NCR)",
+        "district": "Narela / Delhi North Emergency Grid"
+    },
+    {
+        "name": "FCI Regional Grain Terminal - Ludhiana, Punjab",
+        "lat": 30.9010, "lon": 75.8573,
+        "zone": "Trans-Gangetic Plains Agro-Zone (Punjab)",
+        "district": "Ludhiana Agro Grid"
+    },
+    {
+        "name": "FCI Strategic Grain Silo - Karnal, Haryana",
+        "lat": 29.6857, "lon": 76.9905,
+        "zone": "Trans-Gangetic Plains (Haryana)",
+        "district": "Karnal Wheat Corridor"
+    },
+    # Western Sector (Gujarat, Rajasthan)
+    {
+        "name": "FCI Regional Depot - Ahmedabad, Gujarat (Western Sector)",
+        "lat": 23.0225, "lon": 72.5714,
+        "zone": "Gujarat Plains & Hills Agro-Zone",
+        "district": "Ahmedabad / Gandhinagar Sector"
+    },
+    {
+        "name": "FCI Silo Facility - Rajkot, Saurashtra",
+        "lat": 22.3039, "lon": 70.8022,
+        "zone": "Saurashtra & Kutch Semi-Arid Zone",
+        "district": "Rajkot / Jamnagar Grid"
+    },
+    {
+        "name": "FCI Regional Terminal - Surat, South Gujarat",
+        "lat": 21.1702, "lon": 72.8311,
+        "zone": "South Gujarat Heavy Rainfall Agro-Zone",
+        "district": "Surat / Navsari Grid"
+    },
+    {
+        "name": "FCI Buffer Depot - Deesa / Banaskantha, North Gujarat",
+        "lat": 24.2586, "lon": 72.1812,
+        "zone": "North Gujarat Arid Agro-Zone",
+        "district": "Banaskantha Grid"
+    },
+    {
+        "name": "FCI Grain Depot - Vadodara, Gujarat",
+        "lat": 22.3072, "lon": 73.1812,
+        "zone": "Middle Gujarat Fertile Basin",
+        "district": "Vadodara / Charotar Grid"
+    },
+    {
+        "name": "FCI Buffer Depot - Jaipur, Rajasthan",
+        "lat": 26.9124, "lon": 75.7873,
+        "zone": "Western Dry Region",
+        "district": "Jaipur Agro Grid"
+    },
+    # Central Sector (Madhya Pradesh, Chhattisgarh)
+    {
+        "name": "Central Deccan Buffer Depot - Bhopal, MP",
+        "lat": 23.2599, "lon": 77.4126,
+        "zone": "Central Plateau & Hill Agro-Zone",
+        "district": "Bhopal Emergency Grid"
+    },
+    {
+        "name": "FCI Regional Silo Complex - Indore, MP",
+        "lat": 22.7196, "lon": 75.8577,
+        "zone": "Malwa Plateau Agro-Zone",
+        "district": "Indore Grid"
+    },
+    # Central-North Sector (Uttar Pradesh, Bihar)
+    {
+        "name": "FCI Regional Silo Complex - Lucknow, Uttar Pradesh",
+        "lat": 26.8467, "lon": 80.9462,
+        "zone": "Central Gangetic Plain Agro-Zone",
+        "district": "Lucknow Sector"
+    },
+    {
+        "name": "FCI Buffer Depot - Varanasi, Eastern UP",
+        "lat": 25.3176, "lon": 82.9739,
+        "zone": "Eastern Gangetic Plain",
+        "district": "Varanasi Grid"
+    },
+    {
+        "name": "FCI Regional Grain Depot - Patna, Bihar",
+        "lat": 25.5941, "lon": 85.1376,
+        "zone": "Middle Gangetic Plain Agro-Zone",
+        "district": "Patna / Nalanda Grid"
+    },
+    # Eastern Sector (West Bengal, Odisha, Assam)
+    {
+        "name": "East Grid Grain Terminal 4 - Dankuni, West Bengal",
+        "lat": 22.6841, "lon": 88.3075,
+        "zone": "Lower Gangetic Plain Agro-Zone",
+        "district": "Hooghly / Kolkata East Grid"
+    },
+    {
+        "name": "FCI Regional Buffer Depot - Guwahati, Assam",
+        "lat": 26.1445, "lon": 91.7362,
+        "zone": "Eastern Himalayan / Brahmaputra Valley",
+        "district": "Kamrup / Guwahati Grid"
+    },
+    {
+        "name": "FCI Grain Terminal - Bhubaneswar, Odisha",
+        "lat": 20.2961, "lon": 85.8245,
+        "zone": "East Coast Plain Agro-Zone",
+        "district": "Khurda Grid"
+    },
+    # Western-Peninsular (Maharashtra, Goa)
+    {
+        "name": "FCI Coastal Grain Depot - Panvel / Mumbai, Maharashtra",
+        "lat": 18.9894, "lon": 73.1175,
+        "zone": "Konkan Coastal Agro-Zone",
+        "district": "Raigad / Mumbai Sector"
+    },
+    {
+        "name": "FCI Regional Agro-Depot - Manmad / Nashik, Maharashtra",
+        "lat": 20.2547, "lon": 74.4398,
+        "zone": "Western Plateau & Hill Agro-Zone",
+        "district": "Nashik Agro Corridor"
+    },
+    # Southern Sector (Telangana, AP, Karnataka, TN, Kerala)
+    {
+        "name": "FCI South-Central Silo - Hyderabad, Telangana",
+        "lat": 17.3850, "lon": 78.4867,
+        "zone": "Southern Telangana Agro-Zone",
+        "district": "Hyderabad Grid"
+    },
+    {
+        "name": "FCI Regional Silo Complex - Whitefield, Bengaluru",
+        "lat": 12.9716, "lon": 77.7500,
+        "zone": "Southern Plateau & Hills",
+        "district": "Bengaluru Rural Grid"
+    },
+    {
+        "name": "FCI Southern Buffer Terminal - Avadi / Chennai, Tamil Nadu",
+        "lat": 13.1147, "lon": 80.1018,
+        "zone": "East Coast Plain (Tamil Nadu)",
+        "district": "Tiruvallur / Chennai Grid"
+    }
+]
+
+
+def resolve_nearest_fci_depot(latitude: float, longitude: float) -> Dict[str, str]:
+    """Find the geographically nearest FCI strategic grain depot based on GPS coordinates."""
+    import math
+
+    lat = float(latitude or 28.6139)
+    lon = float(longitude or 77.2090)
+
+    def _geo_dist(depot):
+        dlat = (depot["lat"] - lat) * 111.0
+        dlon = (depot["lon"] - lon) * 111.0 * math.cos(math.radians(lat))
+        return dlat * dlat + dlon * dlon
+
+    return min(MAJOR_FCI_DEPOTS, key=_geo_dist)
 
 
 def analyze_image_pixels(image_bytes: bytes) -> VisualSpecimenAnalysis:
@@ -176,7 +332,9 @@ class GeminiService:
                     image_mime_type=image_mime_type or "image/jpeg",
                     unstructured_text=sanitized_text or "Analyze crop pathology from imagery and sensor context.",
                     target_language=target_language,
-                    weather=weather
+                    weather=weather,
+                    latitude=latitude,
+                    longitude=longitude
                 )
                 return cls._build_dual_response(raw_data, target_language, weather, latitude, longitude, visual_analysis)
             except Exception as exc:
@@ -199,17 +357,25 @@ class GeminiService:
         image_mime_type: str,
         unstructured_text: str,
         target_language: str,
-        weather: WeatherContext
+        weather: WeatherContext,
+        latitude: float = 28.6139,
+        longitude: float = 77.2090
     ) -> Dict[str, Any]:
         """Call Google GenAI SDK with multimodal input."""
         from google import genai
         from google.genai import types
 
         client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        nearest_depot = resolve_nearest_fci_depot(latitude, longitude)
 
         prompt_text = f"""
 Target Language for Farmer: {target_language}
 Farmer Symptom Description: {unstructured_text}
+Farm Parcel GPS Coordinates:
+- Latitude: {latitude:.4f}°N
+- Longitude: {longitude:.4f}°E
+- Nearest Strategic Food Corporation Reserve Depot: {nearest_depot['name']}
+- Agro-Climatic Zone: {nearest_depot['zone']}
 Local Weather Context:
 - Temperature: {weather.temperature_c}°C
 - Relative Humidity: {weather.humidity_pct}%
@@ -218,6 +384,7 @@ Local Weather Context:
 - Microclimate Blight Risk: {weather.microclimate_blight_risk}
 
 Perform pathogen identification, verify agricultural safety standards, and generate dual-target payloads.
+Set "buffer_stock_depot" to the nearest designated depot: "{nearest_depot['name']}".
 Return ONLY valid JSON.
 """
 
@@ -554,11 +721,20 @@ Return ONLY valid JSON.
         )
 
         routing_raw = raw_data.get("resource_routing", {})
+        nearest_depot = resolve_nearest_fci_depot(latitude, longitude)
+
+        # Ensure buffer stock depot strictly aligns with GPS coordinates
+        raw_depot = routing_raw.get("buffer_stock_depot", "")
+        if "Cotton Depot" in raw_depot:
+            assigned_depot = raw_depot
+        else:
+            assigned_depot = nearest_depot["name"]
+
         resource_routing = ResourceRouting(
             containment_status=routing_raw.get("containment_status", "RAPID_RESPONSE_REQUIRED"),
             recommended_bio_fungicide_kg=float(routing_raw.get("recommended_bio_fungicide_kg", 350.0)),
             field_officers_dispatched=int(routing_raw.get("field_officers_dispatched", 8)),
-            buffer_stock_depot=routing_raw.get("buffer_stock_depot", "National Silo Buffer Depot 2"),
+            buffer_stock_depot=assigned_depot,
             priority_level=routing_raw.get("priority_level", "HIGH")
         )
 
@@ -579,8 +755,8 @@ Return ONLY valid JSON.
             geo_coordinates=GeoCoordinates(
                 latitude=latitude,
                 longitude=longitude,
-                agro_climatic_zone="Zone IV - Gangetic Agricultural Basin",
-                district_ref="Sector 4 Emergency Grid"
+                agro_climatic_zone=nearest_depot["zone"],
+                district_ref=nearest_depot["district"]
             ),
             weather_telemetry=weather,
             food_security_impact=food_security,

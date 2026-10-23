@@ -571,23 +571,7 @@ document.addEventListener("DOMContentLoaded", () => {
       telInterventionsList.appendChild(li);
     });
 
-    // Prohibited Chemicals
-    if (gView.prohibited_treatments && gView.prohibited_treatments.length > 0) {
-      const pHeader = document.createElement("li");
-      pHeader.style.paddingTop = "0.5rem";
-      pHeader.style.color = "#b91c1c";
-      pHeader.style.fontWeight = "700";
-      pHeader.textContent = getTranslation(currentTargetLang, "safety_prohibited_title") || "Prohibited / Banned Agrochemicals:";
-      telInterventionsList.appendChild(pHeader);
 
-      gView.prohibited_treatments.forEach(prohib => {
-        const li = document.createElement("li");
-        li.style.color = "#dc2626";
-        li.style.padding = "0.2rem 0";
-        li.textContent = `[Blocked] ${prohib}`;
-        telInterventionsList.appendChild(li);
-      });
-    }
   }
 
   function setLoading(loading) {
