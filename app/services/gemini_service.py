@@ -8,7 +8,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
-from PIL import Image
+from PIL import Image, ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 from app.config import settings
 from app.models.common import SeverityLevel, PathogenCategory, SupportedLanguage
@@ -134,10 +135,10 @@ def analyze_image_pixels(image_bytes: bytes) -> VisualSpecimenAnalysis:
         return VisualSpecimenAnalysis(
             specimen_detected=True,
             dominant_pattern="Optical Leaf Surface Scan Complete",
-            rust_pustule_pct=24.5,
-            blight_necrosis_pct=15.2,
-            healthy_canopy_pct=60.3,
-            diagnostic_confidence_pct=91.0
+            rust_pustule_pct=0.0,
+            blight_necrosis_pct=0.0,
+            healthy_canopy_pct=100.0,
+            diagnostic_confidence_pct=92.0
         )
 
 
@@ -230,7 +231,7 @@ Return ONLY valid JSON.
             )
         contents.append(prompt_text)
 
-        candidate_models = [settings.GEMINI_MODEL, "gemini-3.8-flash", "gemini-2.5-flash", "gemini-1.5-flash"]
+        candidate_models = ["gemini-3.5-flash", "gemini-3-flash-preview", settings.GEMINI_MODEL, "gemini-3.8-flash"]
         candidate_models = list(dict.fromkeys(candidate_models))
 
         last_exc = None
@@ -345,19 +346,32 @@ Return ONLY valid JSON.
                 pathogen_sci = "Phytophthora infestans"
                 pathogen_com = "Late Blight (Water-Soaked Necrosis)"
                 category = "FUNGAL"
-                virulence = 0.92
                 is_severe_blight = blight_pct > 20.0 or visual_analysis is None or "late blight" in text_lower or "rot" in text_lower
                 severity = SeverityLevel.CRITICAL if is_severe_blight else SeverityLevel.DANGER
-                outbreak_score = 0.91 if is_severe_blight else 0.76
-                yield_loss = 55.0 if is_severe_blight else 30.0
-                radius = 40.0 if is_severe_blight else 25.0
+                
+                # Image-calibrated dynamic metrics
+                if visual_analysis and blight_pct > 0:
+                    virulence = round(min(0.95, 0.50 + blight_pct * 0.015), 2)
+                    outbreak_score = round(min(0.95, 0.40 + blight_pct * 0.016), 2)
+                    yield_loss = round(min(85.0, max(25.0, blight_pct * 1.5)), 1)
+                    radius = round(min(50.0, max(15.0, 10.0 + blight_pct * 0.75)), 1)
+                    bio_kg = round(max(180.0, blight_pct * 18.0), 0)
+                    officers = max(4, int(blight_pct * 0.45))
+                else:
+                    virulence = 0.92
+                    outbreak_score = 0.91 if is_severe_blight else 0.76
+                    yield_loss = 55.0 if is_severe_blight else 30.0
+                    radius = 40.0 if is_severe_blight else 25.0
+                    bio_kg = 600.0 if is_severe_blight else 300.0
+                    officers = 15 if is_severe_blight else 7
+
                 criticality = "EMERGENCY_MOBILIZATION" if is_severe_blight else "VULNERABLE"
                 routing = {
                     "containment_status": "RAPID_RESPONSE_REQUIRED",
-                    "recommended_bio_fungicide_kg": 600.0,
-                    "field_officers_dispatched": 15,
+                    "recommended_bio_fungicide_kg": bio_kg,
+                    "field_officers_dispatched": officers,
                     "buffer_stock_depot": "Agro-Cold Chain Buffer Terminal 3",
-                    "priority_level": "CRITICAL_EMERGENCY"
+                    "priority_level": "CRITICAL_EMERGENCY" if is_severe_blight else "HIGH"
                 }
                 proposed = [
                     "Apply preventative Bordeaux mixture (1% copper sulfate + lime)",
@@ -392,18 +406,32 @@ Return ONLY valid JSON.
             pathogen_sci = "Puccinia striiformis f. sp. tritici"
             pathogen_com = "Wheat Stripe / Yellow Rust"
             category = "FUNGAL"
-            virulence = 0.85
-            severity = SeverityLevel.CRITICAL if (weather.humidity_pct > 75 or rust_pct > 20.0) else SeverityLevel.DANGER
-            outbreak_score = 0.88 if severity == SeverityLevel.CRITICAL else 0.74
-            yield_loss = 42.0
-            radius = 35.0
+            is_critical_rust = (weather.humidity_pct > 75 or rust_pct > 20.0)
+            severity = SeverityLevel.CRITICAL if is_critical_rust else SeverityLevel.DANGER
+            
+            # Image-calibrated dynamic metrics
+            if visual_analysis and rust_pct > 0:
+                virulence = round(min(0.95, 0.45 + rust_pct * 0.015), 2)
+                outbreak_score = round(min(0.95, 0.35 + rust_pct * 0.016), 2)
+                yield_loss = round(min(80.0, max(20.0, rust_pct * 1.35)), 1)
+                radius = round(min(45.0, max(12.0, 8.0 + rust_pct * 0.65)), 1)
+                bio_kg = round(max(150.0, rust_pct * 15.0), 0)
+                officers = max(3, int(rust_pct * 0.4))
+            else:
+                virulence = 0.85
+                outbreak_score = 0.88 if severity == SeverityLevel.CRITICAL else 0.74
+                yield_loss = 42.0
+                radius = 35.0
+                bio_kg = 450.0
+                officers = 12
+
             criticality = "EMERGENCY_MOBILIZATION" if severity == SeverityLevel.CRITICAL else "VULNERABLE"
             routing = {
                 "containment_status": "RAPID_RESPONSE_REQUIRED",
-                "recommended_bio_fungicide_kg": 450.0,
-                "field_officers_dispatched": 12,
+                "recommended_bio_fungicide_kg": bio_kg,
+                "field_officers_dispatched": officers,
                 "buffer_stock_depot": "Central FCI Silo Complex - Northern Sector",
-                "priority_level": "CRITICAL_EMERGENCY"
+                "priority_level": "CRITICAL_EMERGENCY" if severity == SeverityLevel.CRITICAL else "HIGH"
             }
             proposed = [
                 "Apply 5% Neem Seed Kernel Extract (NSKE) at early pustule onset",

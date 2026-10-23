@@ -1,7 +1,7 @@
 /**
  * Enterprise Application Logic
  * Telemetry Ingestion, Computer Vision Specimen Processing, Gemini Multimodal API Bridge,
- * Operational View Routing, and Multilingual Audio Advisory
+ * Operational View Routing, and Multilingual Audio Advisory & Localization
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,11 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let isListeningVoice = false;
   let recognition = null;
   let currentTelemetryData = null;
+  let lastDiagnosticSource = null; // { type: 'sample' | 'image' | 'text', sampleId?: string }
 
   // DOM Elements
   const langSelect = document.getElementById("lang-select");
   const stageHeaderTitle = document.getElementById("stage-header-title");
-  const geminiStatusLabel = document.getElementById("gemini-status-label");
 
   // Navigation Items & View Sections
   const navSurveillance = document.getElementById("nav-surveillance");
@@ -92,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyStateCard = document.getElementById("empty-state-card");
   const telemetryResultsContainer = document.getElementById("telemetry-results-container");
 
-
   // Live UTC Clock in Header
   function updateLiveClock() {
     const clockBadge = document.getElementById("badge-clock");
@@ -105,21 +104,80 @@ document.addEventListener("DOMContentLoaded", () => {
   updateLiveClock();
 
   // 1. Navigation Switching Between All 4 Operations Sections
-  function switchNav(activeNav, activeViewSection, title) {
+  function switchNav(activeNav, activeViewSection, headerKey) {
     [navSurveillance, navBuffer, navDispatch, navSafety].forEach(n => n.classList.remove("active"));
     [viewSurveillance, viewBuffer, viewDispatch, viewSafety].forEach(v => v.style.display = "none");
 
     activeNav.classList.add("active");
     activeViewSection.style.display = activeViewSection === viewSurveillance ? "grid" : "block";
-    stageHeaderTitle.textContent = title;
+    const localizedTitle = getTranslation(currentTargetLang, headerKey);
+    stageHeaderTitle.textContent = localizedTitle || headerKey;
   }
 
-  navSurveillance.addEventListener("click", () => switchNav(navSurveillance, viewSurveillance, "Emergency Agronomic Surveillance & Telemetry Feed"));
-  navBuffer.addEventListener("click", () => switchNav(navBuffer, viewBuffer, "Strategic National Food Reserves Telemetry"));
-  navDispatch.addEventListener("click", () => switchNav(navDispatch, viewDispatch, "Emergency Containment Logistics & Field Mobilization"));
-  navSafety.addEventListener("click", () => switchNav(navSafety, viewSafety, "Regulatory Standards & Chemical Safety Audit Protocols"));
+  navSurveillance.addEventListener("click", () => switchNav(navSurveillance, viewSurveillance, "header_surveillance"));
+  navBuffer.addEventListener("click", () => switchNav(navBuffer, viewBuffer, "header_buffer"));
+  navDispatch.addEventListener("click", () => switchNav(navDispatch, viewDispatch, "header_dispatch"));
+  navSafety.addEventListener("click", () => switchNav(navSafety, viewSafety, "header_safety"));
 
-  // 2. Fetch Languages with English as Explicit Default
+  // 2. Multilingual Localization Engine
+  const SPEECH_CODE_MAP = {
+    "English": "en-US",
+    "Gujarati": "gu-IN",
+    "Hindi": "hi-IN",
+    "Bengali": "bn-IN",
+    "Punjabi": "pa-IN",
+    "Tamil": "ta-IN",
+    "Telugu": "te-IN",
+    "Marathi": "mr-IN"
+  };
+
+  function applyLanguage(langKey, reloadTelemetry = true) {
+    currentTargetLang = langKey;
+    currentSpeechCode = SPEECH_CODE_MAP[langKey] || "en-US";
+
+    if (recognition) {
+      recognition.lang = currentSpeechCode;
+    }
+
+    if (voiceStatusText && !isListeningVoice) {
+      voiceStatusText.textContent = getTranslation(langKey, "voice_btn_record") || "Record Voice";
+    }
+
+    // Update all translatable elements across the entire page
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      const translation = getTranslation(langKey, key);
+      if (translation) {
+        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+          el.placeholder = translation;
+        } else {
+          el.textContent = translation;
+        }
+      }
+    });
+
+    // Update active top header title
+    if (navSurveillance.classList.contains("active")) {
+      stageHeaderTitle.textContent = getTranslation(langKey, "header_surveillance") || "Emergency Agronomic Surveillance & Telemetry Feed";
+    } else if (navBuffer.classList.contains("active")) {
+      stageHeaderTitle.textContent = getTranslation(langKey, "header_buffer") || "Strategic National Food Reserves Telemetry";
+    } else if (navDispatch.classList.contains("active")) {
+      stageHeaderTitle.textContent = getTranslation(langKey, "header_dispatch") || "Emergency Containment Logistics & Field Mobilization";
+    } else if (navSafety.classList.contains("active")) {
+      stageHeaderTitle.textContent = getTranslation(langKey, "header_safety") || "Regulatory Standards & Chemical Safety Audit Protocols";
+    }
+
+    // Re-run diagnostic in the new language if active
+    if (reloadTelemetry && currentTelemetryData && lastDiagnosticSource) {
+      if (lastDiagnosticSource.type === "sample" && lastDiagnosticSource.sampleId) {
+        runPresetIncident(lastDiagnosticSource.sampleId, false);
+      } else if (lastDiagnosticSource.type === "image" || lastDiagnosticSource.type === "text") {
+        runDiagnosisRequest(false);
+      }
+    }
+  }
+
+  // Fetch Languages with English as Explicit Default
   async function initLanguages() {
     try {
       const res = await fetch("/api/languages");
@@ -148,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentTargetLang = "English";
         currentSpeechCode = "en-US";
+        applyLanguage("English", false);
       }
     } catch (err) {
       console.warn("Language fetch error:", err);
@@ -156,13 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initLanguages();
 
   langSelect.addEventListener("change", (e) => {
-    const selectedOpt = langSelect.options[langSelect.selectedIndex];
-    currentTargetLang = e.target.value;
-    currentSpeechCode = selectedOpt.dataset.speechCode || "en-US";
-
-    if (currentTelemetryData) {
-      runDiagnosisRequest();
-    }
+    applyLanguage(e.target.value, true);
   });
 
   // 3. Tab Switching
@@ -189,11 +242,13 @@ document.addEventListener("DOMContentLoaded", () => {
           inputLat.value = pos.coords.latitude.toFixed(4);
           inputLon.value = pos.coords.longitude.toFixed(4);
           btnDetectGps.textContent = "📍 GPS Updated";
-          setTimeout(() => { btnDetectGps.textContent = "📍 Auto-Detect GPS"; }, 2000);
+          setTimeout(() => {
+            btnDetectGps.textContent = getTranslation(currentTargetLang, "gps_btn") || "📍 Auto-Detect GPS";
+          }, 2000);
         },
         (err) => {
           alert("Location access denied or unavailable. Using regional agricultural coordinates.");
-          btnDetectGps.textContent = "📍 Auto-Detect GPS";
+          btnDetectGps.textContent = getTranslation(currentTargetLang, "gps_btn") || "📍 Auto-Detect GPS";
         }
       );
     } else {
@@ -260,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.onstart = () => {
       isListeningVoice = true;
       btnVoiceToggle.classList.add("listening");
-      voiceStatusText.textContent = "Listening...";
+      voiceStatusText.textContent = getTranslation(currentTargetLang, "voice_btn_listening") || "Listening...";
     };
 
     recognition.onresult = (evt) => {
@@ -294,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function stopVoice() {
     isListeningVoice = false;
     btnVoiceToggle.classList.remove("listening");
-    voiceStatusText.textContent = "Record Voice";
+    voiceStatusText.textContent = getTranslation(currentTargetLang, "voice_btn_record") || "Record Voice";
   }
 
   // 7. Quick Incident Presets
@@ -305,8 +360,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  async function runPresetIncident(sampleId) {
-    setLoading(true);
+  async function runPresetIncident(sampleId, showLoader = true) {
+    lastDiagnosticSource = { type: "sample", sampleId: sampleId };
+    if (showLoader) setLoading(true);
     const formData = new FormData();
     formData.append("sample_id", sampleId);
     formData.append("target_language", currentTargetLang);
@@ -316,24 +372,26 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         body: formData
       });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       renderTelemetry(data);
     } catch (err) {
       console.error("Diagnosis error:", err);
     } finally {
-      setLoading(false);
+      if (showLoader) setLoading(false);
     }
   }
 
   // 8. Execute Multimodal Pathology Audit
-  btnSubmitAudit.addEventListener("click", () => runDiagnosisRequest());
+  btnSubmitAudit.addEventListener("click", () => runDiagnosisRequest(true));
 
-  async function runDiagnosisRequest() {
-    setLoading(true);
+  async function runDiagnosisRequest(showLoader = true) {
+    if (showLoader) setLoading(true);
 
     try {
       let res;
       if (selectedImageFile) {
+        lastDiagnosticSource = { type: "image" };
         const formData = new FormData();
         formData.append("file", selectedImageFile);
         formData.append("target_language", currentTargetLang);
@@ -346,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
           body: formData
         });
       } else {
+        lastDiagnosticSource = { type: "text" };
         const payload = {
           unstructured_text: symptomNotes.value || "Field crop foliage showing discoloration and lesions.",
           target_language: currentTargetLang,
@@ -367,11 +426,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       renderTelemetry(data);
     } catch (err) {
-      console.error("Submission error:", err);
-      // Fallback
-      runPresetIncident("wheat_rust");
+      console.error("Pathology audit error:", err);
+      alert("Multimodal diagnosis error: " + (err.message || "Failed to process image") + ". Please try again.");
     } finally {
-      setLoading(false);
+      if (showLoader) setLoading(false);
     }
   }
 
@@ -465,7 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
       pHeader.style.paddingTop = "0.5rem";
       pHeader.style.color = "#b91c1c";
       pHeader.style.fontWeight = "700";
-      pHeader.textContent = "Prohibited / Banned Agrochemicals:";
+      pHeader.textContent = getTranslation(currentTargetLang, "safety_prohibited_title") || "Prohibited / Banned Agrochemicals:";
       telInterventionsList.appendChild(pHeader);
 
       gView.prohibited_treatments.forEach(prohib => {

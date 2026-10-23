@@ -21,25 +21,25 @@
           </svg>
         </div>
         <div class="brand-info">
-          <h1>CRISIS AGRI NETWORK</h1>
-          <p>National Telemetry Gateway</p>
+          <h1 data-i18n="brand_title">CRISIS AGRI NETWORK</h1>
+          <p data-i18n="brand_sub">National Telemetry Gateway</p>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-label">Surveillance Operations</div>
+        <div class="nav-label" data-i18n="surveillance_ops">Surveillance Operations</div>
         <a class="nav-link active" id="nav-surveillance">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>
-          <span>Incident Ingestion</span>
+          <span data-i18n="nav_surveillance">Incident Ingestion</span>
         </a>
         <a class="nav-link" id="nav-buffer">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
           </svg>
-          <span>National Buffer Stock</span>
+          <span data-i18n="nav_buffer">National Buffer Stock</span>
         </a>
         <a class="nav-link" id="nav-dispatch">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -48,7 +48,7 @@
             <circle cx="5.5" cy="18.5" r="2.5"/>
             <circle cx="18.5" cy="18.5" r="2.5"/>
           </svg>
-          <span>Resource Dispatch</span>
+          <span data-i18n="nav_dispatch">Resource Dispatch</span>
         </a>
         <a class="nav-link" id="nav-safety">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -57,14 +57,14 @@
             <line x1="16" y1="13" x2="8" y2="13"/>
             <line x1="16" y1="17" x2="8" y2="17"/>
           </svg>
-          <span>Safety Audit Standards</span>
+          <span data-i18n="nav_safety">Safety Audit Standards</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
         <!-- Target Language Selector (Default English) -->
         <div class="lang-picker-box">
-          <label for="lang-select">Target Advisory Language</label>
+          <label for="lang-select" data-i18n="target_lang">Target Advisory Language</label>
           <select id="lang-select" class="select-enterprise" aria-label="Select Target Advisory Language">
             <option value="English" selected>English</option>
           </select>
@@ -83,9 +83,9 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
             </svg>
-            Food Security Cell
+            <span data-i18n="food_security_cell">Food Security Cell</span>
           </span>
-          <span class="pill-badge" id="badge-clock">UTC Live</span>
+          <span class="pill-badge" id="badge-clock" data-i18n="utc_live">UTC Live</span>
         </div>
       </header>
 
@@ -101,7 +101,7 @@
                 <polyline points="17 8 12 3 7 8"/>
                 <line x1="12" y1="3" x2="12" y2="15"/>
               </svg>
-              <span>Field Ingestion Gateway</span>
+              <span data-i18n="ingestion_title">Field Ingestion Gateway</span>
             </div>
 
             <!-- Drag & Drop Zone -->
@@ -111,8 +111,8 @@
                 <circle cx="8.5" cy="8.5" r="1.5"/>
                 <polyline points="21 15 16 10 5 21"/>
               </svg>
-              <div class="dropzone-text">Drag and drop crop specimen image, or browse</div>
-              <div class="dropzone-hint">Supports JPEG, PNG, or WebP up to 15MB</div>
+              <div class="dropzone-text" data-i18n="dropzone_text">Drag and drop crop specimen image, or browse</div>
+              <div class="dropzone-hint" data-i18n="dropzone_hint">Supports JPEG, PNG, or WebP up to 15MB</div>
               <input type="file" id="image-file-input" accept="image/*" style="display: none;">
             </div>
 
@@ -124,7 +124,7 @@
             <!-- Voice & Symptom Notes Input -->
             <div class="form-group" style="margin-top: 1rem;">
               <div class="form-label">
-                <span>Field Symptom Observations</span>
+                <span data-i18n="symptom_label">Field Symptom Observations</span>
                 <button type="button" class="voice-capture-btn" id="btn-voice-toggle">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -132,35 +132,35 @@
                     <line x1="12" y1="19" x2="12" y2="23"/>
                     <line x1="8" y1="23" x2="16" y2="23"/>
                   </svg>
-                  <span id="voice-status-text">Record Voice</span>
+                  <span id="voice-status-text" data-i18n="voice_btn_record">Record Voice</span>
                 </button>
               </div>
-              <textarea id="symptom-notes" class="textarea-enterprise" placeholder="Describe symptoms or let image computer vision analyze automatically..."></textarea>
+              <textarea id="symptom-notes" class="textarea-enterprise" data-i18n="symptom_placeholder" placeholder="Describe symptoms or let image computer vision analyze automatically..."></textarea>
             </div>
 
             <!-- Geolocation Inputs & Explanation -->
             <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px; padding: 0.75rem; margin-bottom: 1rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;" data-i18n="gps_title">
                   Farm Location Coordinates
                 </span>
-                <button type="button" id="btn-detect-gps" class="voice-capture-btn" style="font-size: 0.7rem; padding: 0.2rem 0.45rem;">
+                <button type="button" id="btn-detect-gps" class="voice-capture-btn" style="font-size: 0.7rem; padding: 0.2rem 0.45rem;" data-i18n="gps_btn">
                   📍 Auto-Detect GPS
                 </button>
               </div>
 
               <!-- Explanation of Latitude & Longitude -->
-              <p style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.6rem;">
+              <p style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.6rem;" data-i18n="gps_purpose">
                 <strong>Purpose:</strong> Pinpoints farm parcel to fetch real-time microclimate weather telemetry (temperature, relative humidity, rainfall risk) from local agro-grids & compute the 25km spore dispersion containment radius.
               </p>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                 <div>
-                  <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Latitude (°N)</label>
+                  <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;" data-i18n="lat_label">Latitude (°N)</label>
                   <input type="number" id="input-lat" class="select-enterprise" style="background:#ffffff; color:#0f172a;" value="28.6139" step="0.0001">
                 </div>
                 <div>
-                  <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">Longitude (°E)</label>
+                  <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;" data-i18n="lon_label">Longitude (°E)</label>
                   <input type="number" id="input-lon" class="select-enterprise" style="background:#ffffff; color:#0f172a;" value="77.2090" step="0.0001">
                 </div>
               </div>
@@ -168,28 +168,28 @@
 
             <!-- Incident Scenario Presets for Rapid Evaluation -->
             <div class="form-group">
-              <label style="display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">
+              <label style="display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;" data-i18n="presets_title">
                 Quick Diagnostic Presets
               </label>
               <div class="presets-grid">
                 <button type="button" class="preset-row" data-sample="wheat_rust">
-                  <span>Wheat Stripe Rust Epidemic</span>
+                  <span data-i18n="preset_wheat">Wheat Stripe Rust Epidemic</span>
                   <span style="color: #b91c1c; font-weight: 600;">Critical</span>
                 </button>
                 <button type="button" class="preset-row" data-sample="rice_blast">
-                  <span>Rice Blast Infestation</span>
+                  <span data-i18n="preset_rice">Rice Blast Infestation</span>
                   <span style="color: #b45309; font-weight: 600;">High Risk</span>
                 </button>
                 <button type="button" class="preset-row" data-sample="potato_blight">
-                  <span>Potato Late Blight Emergency</span>
+                  <span data-i18n="preset_potato">Potato Late Blight Emergency</span>
                   <span style="color: #7f1d1d; font-weight: 600;">Outbreak</span>
                 </button>
                 <button type="button" class="preset-row" data-sample="pest_aphid">
-                  <span>Foliar Aphid & Borer Threat</span>
+                  <span data-i18n="preset_aphid">Foliar Aphid & Borer Threat</span>
                   <span style="color: #0284c7; font-weight: 600;">Surveillance</span>
                 </button>
                 <button type="button" class="preset-row" data-sample="healthy">
-                  <span>Verified Resilient Crop</span>
+                  <span data-i18n="preset_healthy">Verified Resilient Crop</span>
                   <span style="color: #15803d; font-weight: 600;">Baseline</span>
                 </button>
               </div>
@@ -201,7 +201,7 @@
                 <circle cx="11" cy="11" r="8"/>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <span>Execute Multimodal Pathology Audit</span>
+              <span data-i18n="btn_submit_audit">Execute Multimodal Pathology Audit</span>
             </button>
 
             <!-- Loading State -->
@@ -216,7 +216,7 @@
                 <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
                 <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
               </svg>
-              <span>Analyzing pathology telemetry with Computer Vision & Gemini AI...</span>
+              <span data-i18n="loader_text">Analyzing pathology telemetry with Computer Vision & Gemini AI...</span>
             </div>
 
           </div>
@@ -233,10 +233,10 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
             </div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;" data-i18n="empty_title">
               Awaiting Field Specimen Ingestion
             </h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 440px; margin: 0 auto 1.5rem; line-height: 1.5;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 440px; margin: 0 auto 1.5rem; line-height: 1.5;" data-i18n="empty_desc">
               Upload a crop leaf specimen image or select an incident preset on the left, then click <strong>"Execute Multimodal Pathology Audit"</strong> to generate the localized farmer action plan and government telemetry.
             </p>
           </div>
@@ -247,19 +247,19 @@
             <!-- Telemetry Summary Banner -->
             <div class="telemetry-banner">
               <div class="telemetry-metric">
-                <div class="metric-label">Severity Level</div>
+                <div class="metric-label" data-i18n="metric_severity">Severity Level</div>
                 <div class="metric-value" id="val-severity" style="color: #b91c1c;">--</div>
               </div>
               <div class="telemetry-metric">
-                <div class="metric-label">Outbreak Risk Index</div>
+                <div class="metric-label" data-i18n="metric_outbreak">Outbreak Risk Index</div>
                 <div class="metric-value" id="val-risk-index" style="color: #b45309;">--%</div>
               </div>
               <div class="telemetry-metric">
-                <div class="metric-label">Harvest Loss Risk</div>
+                <div class="metric-label" data-i18n="metric_loss">Harvest Loss Risk</div>
                 <div class="metric-value" id="val-yield-loss" style="color: #0284c7;">--%</div>
               </div>
               <div class="telemetry-metric">
-                <div class="metric-label">Spread Radius</div>
+                <div class="metric-label" data-i18n="metric_spread">Spread Radius</div>
                 <div class="metric-value" id="val-threat-radius">-- km</div>
               </div>
             </div>
@@ -267,7 +267,7 @@
           <!-- Specimen Visual Analysis Card -->
           <div class="card" id="visual-specimen-card" style="padding: 1rem; border-left: 4px solid var(--telemetry-blue);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-              <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">
+              <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);" data-i18n="diag_title">
                 Specimen Image Visual Diagnostics
               </span>
               <span class="pill-badge" id="val-vision-conf" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">
@@ -279,15 +279,15 @@
             </p>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.75rem;">
               <div style="background: #f8fafc; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-light);">
-                <div style="color: var(--text-muted); font-size: 0.68rem;">Rust Pustule Ratio</div>
+                <div style="color: var(--text-muted); font-size: 0.68rem;" data-i18n="diag_rust">Rust Pustule Ratio</div>
                 <div id="val-vision-rust" style="font-size: 1rem; font-weight: 700; color: #b45309;">0.0%</div>
               </div>
               <div style="background: #f8fafc; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-light);">
-                <div style="color: var(--text-muted); font-size: 0.68rem;">Blight Necrosis Ratio</div>
+                <div style="color: var(--text-muted); font-size: 0.68rem;" data-i18n="diag_blight">Blight Necrosis Ratio</div>
                 <div id="val-vision-blight" style="font-size: 1rem; font-weight: 700; color: #b91c1c;">0.0%</div>
               </div>
               <div style="background: #f8fafc; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-light);">
-                <div style="color: var(--text-muted); font-size: 0.68rem;">Healthy Foliage</div>
+                <div style="color: var(--text-muted); font-size: 0.68rem;" data-i18n="diag_healthy">Healthy Foliage</div>
                 <div id="val-vision-healthy" style="font-size: 1rem; font-weight: 700; color: #15803d;">100.0%</div>
               </div>
             </div>
@@ -303,13 +303,13 @@
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
-                <span>Farmer Action Plan</span>
+                <span data-i18n="tab_farmer">Farmer Action Plan</span>
               </button>
               <button class="tab-btn" id="tab-btn-govt">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
                 </svg>
-                <span>Government Telemetry Feed</span>
+                <span data-i18n="tab_govt">Government Telemetry Feed</span>
               </button>
             </div>
 
@@ -318,7 +318,7 @@
               <div class="farmer-view-card">
                 <div class="farmer-headline-box">
                   <div>
-                    <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;">Localized Advisory</span>
+                    <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em;" data-i18n="localized_advisory">Localized Advisory</span>
                     <h3 class="farmer-headline" id="farmer-headline-text">--</h3>
                   </div>
                   <button type="button" class="btn-audio-listen" id="btn-audio-listen">
@@ -326,7 +326,7 @@
                       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                       <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
                     </svg>
-                    <span>Listen Audio Guidance</span>
+                    <span data-i18n="btn_listen_audio">Listen Audio Guidance</span>
                   </button>
                 </div>
 
@@ -345,10 +345,10 @@
 
                 <div class="helpline-footer">
                   <div>
-                    <span style="font-weight: 600;">Government Kisan Call Center Support</span>
-                    <p style="font-size: 0.72rem; color: #166534; opacity: 0.85;">Toll-free 24/7 direct agronomist hotline</p>
+                    <span style="font-weight: 600;" data-i18n="helpline_title">Government Kisan Call Center Support</span>
+                    <p style="font-size: 0.72rem; color: #166534; opacity: 0.85;" data-i18n="helpline_sub">Toll-free 24/7 direct agronomist hotline</p>
                   </div>
-                  <a href="tel:1551" class="helpline-tel-btn">Dial 1551</a>
+                  <a href="tel:1551" class="helpline-tel-btn" data-i18n="helpline_dial">Dial 1551</a>
                 </div>
               </div>
             </div>
@@ -359,25 +359,25 @@
                 
                 <!-- Taxonomy & Classification -->
                 <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px; padding: 0.85rem;">
-                  <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Pathogen Taxonomy</div>
+                  <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;" data-i18n="sec_pathogen">Pathogen Taxonomy</div>
                   <table class="telemetry-table">
-                    <tr><td>Identified Crop</td><td id="tel-crop">--</td></tr>
-                    <tr><td>Common Pathogen</td><td id="tel-pathogen-com">--</td></tr>
-                    <tr><td>Scientific Binomial</td><td id="tel-pathogen-sci">--</td></tr>
-                    <tr><td>Pathogen Category</td><td id="tel-category">--</td></tr>
-                    <tr><td>Virulence Index</td><td id="tel-virulence">--</td></tr>
+                    <tr><td data-i18n="col_crop">Identified Crop</td><td id="tel-crop">--</td></tr>
+                    <tr><td data-i18n="col_pathogen">Common Pathogen</td><td id="tel-pathogen-com">--</td></tr>
+                    <tr><td data-i18n="col_binomial">Scientific Binomial</td><td id="tel-pathogen-sci">--</td></tr>
+                    <tr><td data-i18n="col_category">Pathogen Category</td><td id="tel-category">--</td></tr>
+                    <tr><td data-i18n="col_virulence">Virulence Index</td><td id="tel-virulence">--</td></tr>
                   </table>
                 </div>
 
                 <!-- Microclimate & Resource Routing -->
                 <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px; padding: 0.85rem;">
-                  <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Resource Routing & Logistics</div>
+                  <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;" data-i18n="sec_routing">Resource Routing & Logistics</div>
                   <table class="telemetry-table">
-                    <tr><td>Containment Status</td><td id="tel-containment">--</td></tr>
-                    <tr><td>Bio-Fungicide Required</td><td id="tel-bio-fungicide">-- kg</td></tr>
-                    <tr><td>Extension Officers Dispatched</td><td id="tel-officers">--</td></tr>
-                    <tr><td>Designated Buffer Depot</td><td id="tel-depot">--</td></tr>
-                    <tr><td>Priority Level</td><td id="tel-priority">--</td></tr>
+                    <tr><td data-i18n="col_containment">Containment Status</td><td id="tel-containment">--</td></tr>
+                    <tr><td data-i18n="col_bio">Bio-Fungicide Required</td><td id="tel-bio-fungicide">-- kg</td></tr>
+                    <tr><td data-i18n="col_officers">Extension Officers Dispatched</td><td id="tel-officers">--</td></tr>
+                    <tr><td data-i18n="col_depot">Designated Buffer Depot</td><td id="tel-depot">--</td></tr>
+                    <tr><td data-i18n="col_priority">Priority Level</td><td id="tel-priority">--</td></tr>
                   </table>
                 </div>
 
@@ -385,68 +385,84 @@
 
               <!-- Microclimate Sensor Feed -->
               <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px; padding: 0.85rem; margin-bottom: 1rem;">
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">Microclimate Telemetry & Spray Window</div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;" data-i18n="sec_weather">Microclimate Telemetry & Spray Window</div>
                 <div id="tel-weather-blight" style="font-size: 0.825rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">--</div>
                 <div id="tel-weather-spray" style="font-size: 0.78rem; color: var(--text-secondary);">--</div>
               </div>
 
               <!-- Verified Safety Interventions -->
               <div style="margin-bottom: 1rem;">
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Safety-Audited Interventions</div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;" data-i18n="sec_interventions">Safety-Audited Interventions</div>
                 <ul id="tel-interventions-list" style="list-style: none; font-size: 0.825rem;">
                   <!-- Injected dynamically -->
                 </ul>
               </div>
+            </div> <!-- Close tab-content-govt -->
 
-              </div>
+          </div> <!-- Close card -->
+        </div> <!-- Close telemetry-results-container -->
+
+      </section> <!-- Close output-panel -->
+
+    </div> <!-- Close view-section-surveillance       <!-- VIEW 2: National Buffer Stock Operations -->
+      <div id="view-section-buffer" class="operation-view-stage" style="display: none;">
+        <!-- Explainer Banner -->
+        <div class="card" style="margin-bottom: 1.25rem; border-left: 4px solid #15803d; background: #f0fdf4;">
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <div>
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #14532d; margin-bottom: 0.35rem;" data-i18n="buffer_title">
+                Strategic National Food Reserves Telemetry (Buffer Stock)
+              </h4>
+              <p style="font-size: 0.85rem; color: #166534; line-height: 1.5;" data-i18n="buffer_desc">
+                Understanding Buffer Stock: Grains stored in national silos (FCI) are emergency grain reserves. When crop epidemics damage regional harvests, these reserves ensure food stability, control market prices, and supply seed and ration relief to affected farmers.
+              </p>
             </div>
-
           </div>
-          </div> <!-- Close telemetry-results-container -->
+        </div>
 
-        </section>
-
-      </div>
-
-      <!-- VIEW 2: National Buffer Stock Operations -->
-      <div id="view-section-buffer" style="display: none; padding: 1.5rem;">
         <div class="card" style="margin-bottom: 1.5rem;">
           <div class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
             </svg>
-            <span>Strategic National Food Reserves Telemetry</span>
+            <span data-i18n="buffer_title">Strategic National Food Reserves Telemetry</span>
           </div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-            Real-time grain reserve capacity and vulnerability monitoring across central and state Food Corporation of India (FCI) silos.
-          </p>
+
+          <!-- Key Metrics -->
           <div class="telemetry-banner" style="margin-bottom: 1.5rem;">
             <div class="telemetry-metric">
-              <div class="metric-label">Wheat Silos</div>
+              <div class="metric-label" data-i18n="buffer_wheat">Wheat Silos</div>
               <div class="metric-value" style="color: #15803d;">84.2% <span style="font-size: 0.8rem; font-weight: 500;">(31.2M MT)</span></div>
             </div>
             <div class="telemetry-metric">
-              <div class="metric-label">Paddy / Rice Silos</div>
+              <div class="metric-label" data-i18n="buffer_rice">Paddy / Rice Silos</div>
               <div class="metric-value" style="color: #0284c7;">78.6% <span style="font-size: 0.8rem; font-weight: 500;">(28.4M MT)</span></div>
             </div>
             <div class="telemetry-metric">
-              <div class="metric-label">Coarse Grains & Pulses</div>
+              <div class="metric-label" data-i18n="buffer_coarse">Coarse Grains & Pulses</div>
               <div class="metric-value" style="color: #b45309;">64.1% <span style="font-size: 0.8rem; font-weight: 500;">(5.2M MT)</span></div>
             </div>
             <div class="telemetry-metric">
-              <div class="metric-label">Reserve Runway</div>
+              <div class="metric-label" data-i18n="buffer_runway">National Food Runway</div>
               <div class="metric-value" style="color: #15803d;">185 Days</div>
             </div>
           </div>
-          <table class="telemetry-table" style="font-size: 0.85rem;">
+
+          <!-- Silo Details Table -->
+          <table class="telemetry-table" style="font-size: 0.85rem; width: 100%;">
             <thead>
               <tr style="background: #f1f5f9; font-weight: 700; color: var(--text-secondary);">
-                <td style="padding: 0.65rem;">Regional Silo Depot</td>
-                <td>Agro-Zone</td>
-                <td>Current Capacity</td>
-                <td>Outbreak Threat Status</td>
-                <td>Action Protocol</td>
+                <td style="padding: 0.65rem;" data-i18n="buffer_table_depot">Regional Silo Depot</td>
+                <td data-i18n="buffer_table_zone">Agro-Zone</td>
+                <td data-i18n="buffer_table_cap">Current Capacity</td>
+                <td data-i18n="buffer_table_threat">Epidemic Threat Status</td>
+                <td data-i18n="buffer_table_action">Action Protocol</td>
               </tr>
             </thead>
             <tbody>
@@ -454,21 +470,21 @@
                 <td style="font-weight: 600;">FCI Regional Silo Complex - Northern Sector</td>
                 <td>Indo-Gangetic Basin</td>
                 <td>82% Stocked</td>
-                <td><span style="color: #b91c1c; font-weight: 700;">Vulnerable (Stripe Rust)</span></td>
+                <td><span style="color: #b91c1c; font-weight: 700; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">⚠️ Monitored for Stripe Rust</span></td>
                 <td>Quarantine outbound shipments; inspect perimeter haulms</td>
               </tr>
               <tr>
                 <td style="font-weight: 600;">East Grid Grain Terminal 4</td>
                 <td>Brahmaputra Delta</td>
                 <td>91% Stocked</td>
-                <td><span style="color: #15803d; font-weight: 700;">Normal</span></td>
+                <td><span style="color: #15803d; font-weight: 700; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">✅ Safe & Healthy</span></td>
                 <td>Standard weekly aeration and moisture control</td>
               </tr>
               <tr>
                 <td style="font-weight: 600;">Central Deccan Buffer Depot</td>
                 <td>Semi-Arid Central</td>
                 <td>68% Stocked</td>
-                <td><span style="color: #b45309; font-weight: 700;">Watch (Borer Alert)</span></td>
+                <td><span style="color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 6px; border-radius: 4px;">🔍 Routine Pest Check</span></td>
                 <td>Deploy bio-pesticide perimeter barrier</td>
               </tr>
             </tbody>
@@ -477,40 +493,62 @@
       </div>
 
       <!-- VIEW 3: Resource Dispatch Matrix -->
-      <div id="view-section-dispatch" style="display: none; padding: 1.5rem;">
+      <div id="view-section-dispatch" class="operation-view-stage" style="display: none;">
+        <!-- Explainer Banner -->
+        <div class="card" style="margin-bottom: 1.25rem; border-left: 4px solid #0284c7; background: #f0f9ff;">
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <div>
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #0369a1; margin-bottom: 0.35rem;" data-i18n="dispatch_title">
+                Emergency Containment Logistics & Field Mobilization
+              </h4>
+              <p style="font-size: 0.85rem; color: #075985; line-height: 1.5;" data-i18n="dispatch_desc">
+                Understanding Resource Dispatch: When severe crop disease outbreaks are detected, the government immediately deploys rapid-response containment teams, automated bio-spray drone squadrons, and certified agronomists directly to farm clusters to halt the epidemic within 3 hours.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div class="card" style="margin-bottom: 1.5rem;">
           <div class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="1" y="3" width="15" height="13"/>
-              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 8"/>
               <circle cx="5.5" cy="18.5" r="2.5"/>
               <circle cx="18.5" cy="18.5" r="2.5"/>
             </svg>
-            <span>Emergency Containment Logistics & Field Mobilization</span>
+            <span data-i18n="dispatch_title">Emergency Containment Logistics & Field Mobilization</span>
           </div>
+
           <div class="telemetry-banner" style="margin-bottom: 1.5rem;">
             <div class="telemetry-metric">
-              <div class="metric-label">Organic Bio-Fungicide Available</div>
+              <div class="metric-label" data-i18n="dispatch_bio">Organic Bio-Fungicide Ready</div>
               <div class="metric-value" style="color: #15803d;">14,500 kg</div>
             </div>
             <div class="telemetry-metric">
-              <div class="metric-label">Rapid Drone Spray Units</div>
+              <div class="metric-label" data-i18n="dispatch_drones">Rapid Drone Spray Squadrons</div>
               <div class="metric-value" style="color: #0284c7;">48 Squadrons</div>
             </div>
             <div class="telemetry-metric">
-              <div class="metric-label">Agronomists on Standby</div>
+              <div class="metric-label" data-i18n="dispatch_officers">Agronomists on Standby</div>
               <div class="metric-value" style="color: #15803d;">124 Officers</div>
             </div>
             <div class="telemetry-metric">
-              <div class="metric-label">Mobilization Response Time</div>
+              <div class="metric-label" data-i18n="dispatch_speed">Mobilization Response Time</div>
               <div class="metric-value" style="color: #15803d;">&lt; 3 Hours</div>
             </div>
           </div>
-          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-            <button type="button" class="btn-primary-action" style="max-width: 280px;" onclick="alert('Emergency Rapid-Response Drone Squadron Alerted.')">
+
+          <!-- Quick Action Controls -->
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button type="button" class="btn-primary-action" style="max-width: 320px;" onclick="alert('Emergency Rapid-Response Drone Squadron Alerted and Dispatched.')" data-i18n="dispatch_btn_drone">
               Mobilize Drone Bio-Spray Task Force
             </button>
-            <button type="button" class="btn-primary-action" style="max-width: 280px; background: #0284c7;" onclick="alert('Regional Silo Buffer Transfer Request Dispatched.')">
+            <button type="button" class="btn-primary-action" style="max-width: 320px; background: #0284c7;" onclick="alert('Regional Silo Buffer Transfer Request Dispatched.')" data-i18n="dispatch_btn_reallocate">
               Reallocate Strategic Buffer Stock
             </button>
           </div>
@@ -518,7 +556,26 @@
       </div>
 
       <!-- VIEW 4: Safety Audit Standards Directory -->
-      <div id="view-section-safety" style="display: none; padding: 1.5rem;">
+      <div id="view-section-safety" class="operation-view-stage" style="display: none;">
+        <!-- Explainer Banner -->
+        <div class="card" style="margin-bottom: 1.25rem; border-left: 4px solid #b91c1c; background: #fff5f5;">
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div>
+              <h4 style="font-size: 0.95rem; font-weight: 700; color: #991b1b; margin-bottom: 0.35rem;" data-i18n="safety_title">
+                Regulatory Standards & Chemical Safety Audit Protocols
+              </h4>
+              <p style="font-size: 0.85rem; color: #7f1d1d; line-height: 1.5;" data-i18n="safety_desc">
+                Understanding Agricultural Safety Standards: Toxic, unverified chemicals poison drinking water, degrade soil fertility, kill honeybees, and cause severe farmer illnesses. Our AI enforces strict 'Organic-First' rules, rejecting dangerous poisons while recommending verified biological treatments.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div class="card" style="margin-bottom: 1.5rem;">
           <div class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -527,32 +584,33 @@
               <line x1="16" y1="13" x2="8" y2="13"/>
               <line x1="16" y1="17" x2="8" y2="17"/>
             </svg>
-            <span>Regulatory Standards & Chemical Safety Audit Protocols</span>
+            <span data-i18n="safety_title">Regulatory Standards & Chemical Safety Audit Protocols</span>
           </div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-            Codified rules enforced automatically by the Gemini AI verification bridge to eliminate hallucinations and hazardous chemical poisoning.
-          </p>
+
           <div class="telemetry-grid">
-            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 1rem;">
-              <h4 style="color: #b91c1c; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem;">
-                ❌ Strictly Prohibited / Banned Agrochemicals
+            <!-- Banned Chemicals -->
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 1.25rem;">
+              <h4 style="color: #b91c1c; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;" data-i18n="safety_prohibited_title">
+                ❌ Strictly Prohibited / Banned Agrochemicals (Never Use These)
               </h4>
-              <ul style="font-size: 0.8rem; color: #7f1d1d; line-height: 1.6; padding-left: 1rem;">
-                <li><strong>Endosulfan:</strong> Banned persistent organic pollutant; causes severe neurotoxicity.</li>
-                <li><strong>Monocrotophos:</strong> WHO Class Ib acute organophosphate toxin; banned on field crops.</li>
-                <li><strong>Paraquat:</strong> Non-selective high-hazard herbicide with irreversible pulmonary toxicity.</li>
-                <li><strong>Chlorpyrifos:</strong> Severely restricted neurotoxin; hazard to children and pollinators.</li>
+              <ul style="font-size: 0.825rem; color: #7f1d1d; line-height: 1.7; padding-left: 1.2rem;">
+                <li><strong>Endosulfan:</strong> Banned persistent neurotoxin; causes irreversible reproductive and central nervous system damage.</li>
+                <li><strong>Monocrotophos:</strong> WHO Class Ib acute organophosphate toxin; strictly banned on field crops due to fatal accidental ingestion risks.</li>
+                <li><strong>Paraquat:</strong> High-hazard non-selective herbicide with no known antidote; causes severe lung fibrosis.</li>
+                <li><strong>Chlorpyrifos:</strong> Banned in modern agriculture; severely harms children, farm workers, pollinators, and beneficial earthworms.</li>
               </ul>
             </div>
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 1rem;">
-              <h4 style="color: #15803d; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem;">
-                🌿 Approved Organic & Biological First-Line Controls
+
+            <!-- Approved Organic Controls -->
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 1.25rem;">
+              <h4 style="color: #15803d; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem;" data-i18n="safety_approved_title">
+                🌿 Approved Organic & Biological First-Line Controls (Recommended)
               </h4>
-              <ul style="font-size: 0.8rem; color: #14532d; line-height: 1.6; padding-left: 1rem;">
-                <li><strong>Neem Seed Kernel Extract (NSKE 5%):</strong> Safe bio-antifeedant & fungal spore suppressant.</li>
-                <li><strong>Trichoderma viride (5g/L):</strong> Natural antagonistic bio-fungicide suppressing rust & root rot.</li>
-                <li><strong>Pseudomonas fluorescens:</strong> Siderophore-producing bio-agent suppressing rice blast & blight.</li>
-                <li><strong>Bordeaux Mixture (1%):</strong> Traditional verified copper sulfate & lime preventative.</li>
+              <ul style="font-size: 0.825rem; color: #14532d; line-height: 1.7; padding-left: 1.2rem;">
+                <li><strong>Neem Seed Kernel Extract (NSKE 5%):</strong> Proven botanical bio-antifeedant and spore suppressant safe for mammals and pollinators.</li>
+                <li><strong>Trichoderma viride (5g/L):</strong> Natural antagonistic bio-fungicide that outcompetes pathogenic root rot and rust fungi.</li>
+                <li><strong>Pseudomonas fluorescens:</strong> Siderophore-producing bio-agent suppressing rice blast, bacterial leaf blight, and soil-borne wilt.</li>
+                <li><strong>Bordeaux Mixture (1%):</strong> Traditional verified copper sulfate & lime preventative barrier safe for foliage when properly diluted.</li>
               </ul>
             </div>
           </div>
@@ -563,6 +621,7 @@
 
   </div>
 
+  <script src="/static/js/translations.js"></script>
   <script src="/static/js/audio.js"></script>
   <script src="/static/js/app.js"></script>
 </body>
