@@ -1,0 +1,672 @@
+/* Crisis Agriculture & Food Security Network - Accessible Glassmorphism Styling */
+
+:root {
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Helvetica, Arial, sans-serif;
+  --bg-dark: #0a0f0d;
+  --glass-bg: rgba(18, 26, 21, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-glow: rgba(52, 211, 153, 0.15);
+
+  /* Status Colors */
+  --safe-green: #10b981;
+  --warning-amber: #f59e0b;
+  --danger-red: #ef4444;
+  --critical-darkred: #b91c1c;
+
+  /* Accent Colors */
+  --wheat-gold: #f59e0b;
+  --nature-leaf: #34d399;
+  --sky-blue: #38bdf8;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* 3D WebGL Canvas fixed background */
+#canvas-3d {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: auto;
+}
+
+/* App container */
+.app-container {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Top bar: Language & View Mode */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1.25rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-icon {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));
+}
+
+.brand-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fcd34d, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Language Dropdown */
+.lang-selector-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lang-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.85rem;
+  padding: 0.5rem 1.8rem 0.5rem 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.lang-select:focus, .lang-select:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--wheat-gold);
+}
+
+.lang-icon {
+  position: absolute;
+  right: 0.6rem;
+  pointer-events: none;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* View Mode Toggle Button */
+.view-toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--sky-blue);
+}
+
+/* Glass Main Panel */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+/* Single-Button Action Flow for Farmer */
+.action-hero-section {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.instruction-hint {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  color: #e2e8f0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.single-button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+/* Massive Universal Action Buttons */
+.massive-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 135px;
+  height: 135px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 3rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  touch-action: manipulation;
+}
+
+.massive-action-btn:active {
+  transform: scale(0.92);
+}
+
+.massive-action-btn:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+/* Camera button - Vibrant Green */
+.btn-camera {
+  background: linear-gradient(135deg, #10b981, #047857);
+}
+
+.btn-camera:hover {
+  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.5);
+}
+
+/* Mic button - Vibrant Amber */
+.btn-mic {
+  background: linear-gradient(135deg, #f59e0b, #b45309);
+}
+
+.btn-mic:hover {
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.5);
+}
+
+.btn-mic.listening {
+  animation: pulse-ring 1.5s infinite;
+  background: linear-gradient(135deg, #ef4444, #991b1b);
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 25px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.btn-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-top: 0.4rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Live Voice Waveform Bar */
+.voice-indicator {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  margin: 0.5rem auto;
+}
+
+.voice-indicator.active {
+  display: flex;
+}
+
+.voice-bar {
+  width: 6px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 4px;
+  animation: soundBars 0.8s ease-in-out infinite alternate;
+}
+
+.voice-bar:nth-child(2) { animation-delay: 0.15s; height: 24px; }
+.voice-bar:nth-child(3) { animation-delay: 0.3s; height: 32px; }
+.voice-bar:nth-child(4) { animation-delay: 0.45s; height: 18px; }
+.voice-bar:nth-child(5) { animation-delay: 0.6s; height: 12px; }
+
+@keyframes soundBars {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1.4); }
+}
+
+/* Quick Scenarios Tray */
+.quick-tray {
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+}
+
+.quick-tray-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.chip-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 2rem;
+  color: #e2e8f0;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.chip-btn:hover {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: var(--wheat-gold);
+  transform: translateY(-1px);
+}
+
+/* Result Section: Farmer View */
+.result-card {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.result-card.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Status Banner */
+.status-banner {
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.status-icon-giant {
+  font-size: 3.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.status-text-group {
+  flex: 1;
+}
+
+.status-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  margin-bottom: 0.35rem;
+}
+
+.status-headline {
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+/* Audio Read Aloud Button */
+.audio-speak-btn {
+  background: #ffffff;
+  color: #0f172a;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  margin-top: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.audio-speak-btn:hover {
+  transform: scale(1.04);
+  background: #f8fafc;
+}
+
+.audio-speak-btn.playing {
+  background: #38bdf8;
+  color: #ffffff;
+  animation: pulse-ring 1.2s infinite;
+}
+
+/* Action Steps List for Farmer */
+.action-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.action-step-item {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.1rem;
+  padding: 1rem 1.25rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* Warning & Do Not Box */
+.do-not-box {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 1.1rem;
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fca5a5;
+}
+
+/* Emergency Helpline Button */
+.helpline-box {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 1.1rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.helpline-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #a7f3d0;
+}
+
+.helpline-dial-btn {
+  background: var(--safe-green);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 900;
+  padding: 0.6rem 1.25rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 6px 14px rgba(16, 185, 129, 0.4);
+}
+
+/* Government Crisis Dashboard View */
+.govt-dashboard {
+  display: none;
+}
+
+.govt-dashboard.active {
+  display: block;
+}
+
+.govt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.75rem;
+}
+
+.govt-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--sky-blue);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.govt-badge {
+  background: rgba(56, 189, 248, 0.2);
+  color: var(--sky-blue);
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.metric-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 0.85rem;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.metric-val {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.json-inspector {
+  background: #050807;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.85rem;
+  padding: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  color: #34d399;
+  max-height: 250px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* 3D Field HUD Overlay Controls */
+.hud-controls {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 20;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hud-btn {
+  background: rgba(18, 26, 21, 0.85);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 0.4rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Spinner / Loading Overlay */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 10, 8, 0.75);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loading-overlay.active {
+  display: flex;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--wheat-gold);
+  border-radius: 50%;
+  animation: spin 0.9s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fcd34d;
+}
+
+/* Hidden file input */
+#image-file-input {
+  display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .app-container {
+    padding: 0.5rem;
+  }
+  .massive-action-btn {
+    width: 115px;
+    height: 115px;
+    font-size: 2.6rem;
+  }
+  .status-headline {
+    font-size: 1.3rem;
+  }
+  .status-icon-giant {
+    font-size: 2.8rem;
+  }
+  .action-step-item {
+    font-size: 1.05rem;
+    padding: 0.85rem 1rem;
+  }
+}

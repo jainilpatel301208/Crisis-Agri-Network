@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0f0d">
+  <title>Crisis Agriculture & Food Security Network</title>
+  <meta name="description" content="Accessible Multimodal AI Network bridging rural farmers and national food security disaster management with 3D field experience and 15 Indic languages.">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Lightweight Three.js CDN for procedural 3D wheat environment -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Background 3D Swaying Crop Field Canvas -->
+  <canvas id="canvas-3d"></canvas>
+
+  <!-- Main User Interface Container -->
+  <main class="app-container">
+
+    <!-- Top Navigation & Language Routing -->
+    <header class="top-nav">
+      <div class="brand-section">
+        <span class="brand-icon" role="img" aria-label="Wheat Sprout">🌾</span>
+        <div>
+          <h1 class="brand-title">CRISIS AGRI NETWORK</h1>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <!-- Indic Multilingual Selector -->
+        <div class="lang-selector-wrapper">
+          <select id="lang-select" class="lang-select" aria-label="Select Target Regional Language">
+            <option value="Hindi" data-speech-code="hi-IN">हिन्दी (Hindi)</option>
+          </select>
+          <span class="lang-icon">▼</span>
+        </div>
+
+        <!-- Toggle View: Farmer <-> Government Dashboard -->
+        <button id="view-toggle-btn" class="view-toggle-btn" aria-label="Toggle Dashboard View">
+          🏛️ <span>Crisis Dashboard</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- FARMER VIEW PANEL (Ultra-Accessible Glassmorphism) -->
+    <section id="farmer-panel" class="glass-panel" aria-label="Farmer Assistance Interface">
+
+      <div class="action-hero-section">
+        <p class="instruction-hint" id="farmer-prompt-hint">📸 Tap Camera or 🎙️ Speak in your language</p>
+
+        <!-- Massive Universal Single-Button Flow -->
+        <div class="single-button-row">
+          <!-- Big Camera Button -->
+          <button id="btn-camera" class="massive-action-btn btn-camera" title="Take Crop Photo" aria-label="Capture Crop Leaf Photo">
+            <span>📷</span>
+            <span class="btn-label">PHOTO</span>
+          </button>
+
+          <!-- Big Voice-to-Text Button -->
+          <button id="btn-voice" class="massive-action-btn btn-mic" title="Speak Issue" aria-label="Speak Crop Issue in Regional Dialect">
+            <span>🎙️</span>
+            <span class="btn-label">SPEAK</span>
+          </button>
+        </div>
+
+        <!-- Hidden File Input for Camera / Gallery -->
+        <input type="file" id="image-file-input" accept="image/*" capture="environment">
+
+        <!-- Live Voice Waveform Indicator -->
+        <div id="voice-indicator" class="voice-indicator" aria-hidden="true">
+          <span class="voice-bar"></span>
+          <span class="voice-bar"></span>
+          <span class="voice-bar"></span>
+          <span class="voice-bar"></span>
+          <span class="voice-bar"></span>
+        </div>
+
+        <!-- Instant Test-Drive Scenarios -->
+        <div class="quick-tray">
+          <div class="quick-tray-label">⚡ Instant Test Scenarios:</div>
+          <div class="quick-chips">
+            <button class="chip-btn" data-sample="wheat_rust">🌾 Wheat Yellow Rust</button>
+            <button class="chip-btn" data-sample="rice_blast">🍚 Rice Blast</button>
+            <button class="chip-btn" data-sample="potato_blight">🥔 Potato Late Blight</button>
+            <button class="chip-btn" data-sample="pest_aphid">🐛 Insect Pest Warning</button>
+            <button class="chip-btn" data-sample="healthy">🛡️ Healthy Crop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Farmer Action Plan Result -->
+      <article id="result-card" class="result-card" aria-live="polite">
+        <!-- Visual Severity Banner -->
+        <div id="status-banner" class="status-banner" style="background-color: var(--danger-red);">
+          <div id="status-icon-giant" class="status-icon-giant">✂️</div>
+          <div class="status-text-group">
+            <div id="status-badge" class="status-badge">CRITICAL ALERT</div>
+            <h2 id="status-headline" class="status-headline">বিপদ! শস্যত ৰোগৰ সংক্ৰমণ</h2>
+            <button id="btn-audio-speak" class="audio-speak-btn" aria-label="Listen to advisory">
+              <span>🔊</span> <span>Listen Advisory</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Action Steps -->
+        <div id="action-steps-container" class="action-steps-grid">
+          <!-- Dynamically populated numbered steps -->
+        </div>
+
+        <!-- Prohibited / Danger Warning Box -->
+        <div id="do-not-container" class="do-not-box">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Emergency Support Box -->
+        <div id="helpline-box" class="helpline-box">
+          <div class="helpline-label">
+            <div>📞 Free Farmer Crisis Helpline</div>
+            <div style="font-size: 0.8rem; opacity: 0.85;">Direct Government Agricultural Expert Support</div>
+          </div>
+          <a href="tel:1551" class="helpline-dial-btn" aria-label="Call Kisan Helpline 1551">
+            <span>📞</span> <span>1551</span>
+          </a>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- GOVERNMENT EMERGENCY DASHBOARD VIEW -->
+    <section id="govt-panel" class="glass-panel govt-dashboard" aria-label="National Food Security Dashboard">
+      <div class="govt-header">
+        <h2 class="govt-title">
+          <span>🏛️</span> Food Security Crisis Surveillance
+        </h2>
+        <span class="govt-badge">FEED STATUS: LIVE</span>
+      </div>
+
+      <!-- Critical Quantitative Metrics -->
+      <div class="metric-cards-grid">
+        <div class="metric-card">
+          <div class="metric-label">Outbreak Risk Index</div>
+          <div id="govt-risk-score" class="metric-val" style="color: #ef4444;">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Harvest Loss Risk</div>
+          <div id="govt-yield-loss" class="metric-val" style="color: #f59e0b;">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Threat Radius</div>
+          <div id="govt-threat-radius" class="metric-val" style="color: #38bdf8;">--</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Buffer Stock Vulnerability</div>
+          <div id="govt-buffer-status" class="metric-val" style="color: #f43f5e;">--</div>
+        </div>
+      </div>
+
+      <!-- Pathogen & Weather Advisory -->
+      <div style="margin-bottom: 1.25rem;">
+        <h3 style="font-size: 0.95rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">Identified Pathogen / Pest</h3>
+        <p id="govt-pathogen" style="font-size: 1.15rem; font-weight: 800; color: #f8fafc; margin-bottom: 0.75rem;">--</p>
+
+        <h3 style="font-size: 0.95rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">Microclimate Blight Alert</h3>
+        <p id="govt-weather-alert" style="font-size: 0.95rem; color: #cbd5e1; background: rgba(0,0,0,0.3); padding: 0.6rem 0.85rem; border-radius: 0.5rem;">--</p>
+      </div>
+
+      <!-- Verified Interventions -->
+      <div style="margin-bottom: 1.25rem;">
+        <h3 style="font-size: 0.95rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Safety-Audited Interventions</h3>
+        <ul id="govt-remedies-list" style="list-style: none; padding-left: 0; font-size: 0.9rem;">
+          <!-- Injected dynamically -->
+        </ul>
+      </div>
+
+      <!-- Strict JSON Schema Inspector -->
+      <div>
+        <h3 style="font-size: 0.95rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">Strict JSON Export (API Contract)</h3>
+        <pre id="govt-json-inspector" class="json-inspector">{}</pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3D Environment Control HUD -->
+  <aside class="hud-controls" aria-label="3D Controls">
+    <button id="btn-wind" class="hud-btn" title="Toggle Wind Velocity">🌾 Gentle Breeze</button>
+  </aside>
+
+  <!-- Loading Animation Overlay -->
+  <div id="loading-overlay" class="loading-overlay" aria-live="assertive" role="alert">
+    <div class="spinner"></div>
+    <div class="loading-text">Analyzing Crop Health with Gemini AI...</div>
+    <div style="font-size: 0.9rem; color: #94a3b8;">Verifying agricultural safety standards & translating...</div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="/static/js/field3d.js"></script>
+  <script src="/static/js/audio.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

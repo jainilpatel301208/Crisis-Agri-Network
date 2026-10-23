@@ -1,0 +1,28 @@
+{
+  "name": "crisis-agriculture-food-security-network",
+  "version": "1.0.0",
+  "description": "Crisis Agriculture & Food Security Network - Multimodal AI 3D Web Application for Rural Farmers and Government Food Security Dashboards",
+  "main": "app/static/js/app.js",
+  "scripts": {
+    "start": "python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "test": "pytest tests/ -v",
+    "dev:frontend": "npx serve app/static -l 3000"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  },
+  "keywords": [
+    "crisis-agriculture",
+    "food-security",
+    "gemini-multimodal-api",
+    "threejs",
+    "fastapi",
+    "indic-languages",
+    "accessible-ux"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "Apache-2.0"
+}
