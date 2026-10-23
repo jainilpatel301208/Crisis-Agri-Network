@@ -92,12 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const jsonInspector = document.getElementById("json-inspector");
   const btnCopyJson = document.getElementById("btn-copy-json");
 
-  // API Key Modal Elements
-  const btnToggleKeyModal = document.getElementById("btn-toggle-key-modal");
-  const modalApiKey = document.getElementById("modal-api-key");
-  const inputApiKeyModal = document.getElementById("input-api-key-modal");
-  const btnCancelModal = document.getElementById("btn-cancel-modal");
-  const btnSaveKeyModal = document.getElementById("btn-save-key-modal");
 
   // Live UTC Clock in Header
   function updateLiveClock() {
@@ -492,35 +486,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 10. API Key Modal Handlers
-  btnToggleKeyModal.addEventListener("click", () => {
-    modalApiKey.style.display = "flex";
-  });
-
-  btnCancelModal.addEventListener("click", () => {
-    modalApiKey.style.display = "none";
-  });
-
-  btnSaveKeyModal.addEventListener("click", async () => {
-    const keyVal = inputApiKeyModal.value.trim();
-    try {
-      const res = await fetch("/api/settings/api-key", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ api_key: keyVal })
-      });
-      const data = await res.json();
-      modalApiKey.style.display = "none";
-      if (data.configured) {
-        geminiStatusLabel.textContent = "Gemini Live API: Connected";
-        alert("Google Gemini API key registered successfully!");
-      } else {
-        geminiStatusLabel.textContent = "Multimodal AI Engine: Active";
-      }
-    } catch (err) {
-      alert("Failed to update API key: " + err);
-    }
-  });
 
   function setLoading(loading) {
     if (loading) {
