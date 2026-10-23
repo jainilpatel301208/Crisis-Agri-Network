@@ -67,6 +67,39 @@ body {
   display: flex;
 }
 
+/* Accessibility Skip Link */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 1rem;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  z-index: 1000;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+  outline: 3px solid #ffff00;
+  outline-offset: 2px;
+}
+
+/* Universal Focus-Visible Rings (WCAG 2.4.7) */
+:focus-visible {
+  outline: 3px solid var(--telemetry-blue) !important;
+  outline-offset: 2px !important;
+}
+
+body.high-contrast :focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 3px !important;
+}
+
 /* App Wrapper */
 .dashboard-layout {
   display: flex;
@@ -143,9 +176,13 @@ body {
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 500;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
   transition: all 0.15s ease;
   margin-bottom: 0.25rem;
-  cursor: pointer;
 }
 
 .nav-link:hover, .nav-link.active {

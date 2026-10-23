@@ -8,14 +8,16 @@
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+  <!-- Accessibility Skip Link (WCAG 2.4.1) -->
+  <a href="#main-stage" class="skip-link">Skip to main content</a>
 
   <div class="dashboard-layout">
     
     <!-- 1. Left Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar" aria-label="Main Navigation">
       <div class="sidebar-header">
         <div class="brand-crest">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             <path d="m9 12 2 2 4-4"/>
           </svg>
@@ -26,39 +28,39 @@
         </div>
       </div>
 
-      <nav class="sidebar-nav">
+      <nav class="sidebar-nav" role="tablist" aria-label="Surveillance Operation Sections">
         <div class="nav-label" data-i18n="surveillance_ops">Surveillance Operations</div>
-        <a class="nav-link active" id="nav-surveillance">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button type="button" class="nav-link active" id="nav-surveillance" role="tab" aria-selected="true" aria-controls="view-section-surveillance">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>
           <span data-i18n="nav_surveillance">Incident Ingestion</span>
-        </a>
-        <a class="nav-link" id="nav-buffer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </button>
+        <button type="button" class="nav-link" id="nav-buffer" role="tab" aria-selected="false" aria-controls="view-section-buffer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
           </svg>
           <span data-i18n="nav_buffer">National Buffer Stock</span>
-        </a>
-        <a class="nav-link" id="nav-dispatch">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </button>
+        <button type="button" class="nav-link" id="nav-dispatch" role="tab" aria-selected="false" aria-controls="view-section-dispatch">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="1" y="3" width="15" height="13"/>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 8"/>
             <circle cx="5.5" cy="18.5" r="2.5"/>
             <circle cx="18.5" cy="18.5" r="2.5"/>
           </svg>
           <span data-i18n="nav_dispatch">Resource Dispatch</span>
-        </a>
-        <a class="nav-link" id="nav-safety">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        </button>
+        <button type="button" class="nav-link" id="nav-safety" role="tab" aria-selected="false" aria-controls="view-section-safety">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
             <line x1="16" y1="13" x2="8" y2="13"/>
             <line x1="16" y1="17" x2="8" y2="17"/>
           </svg>
           <span data-i18n="nav_safety">Safety Audit Standards</span>
-        </a>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -73,7 +75,7 @@
     </aside>
 
     <!-- 2. Main Enterprise Workstage -->
-    <main class="main-stage">
+    <main class="main-stage" id="main-stage" tabindex="-1">
       <header class="top-app-header">
         <div class="page-title">
           <h2 id="stage-header-title">Emergency Agronomic Surveillance & Telemetry Feed</h2>
@@ -137,7 +139,7 @@
             <!-- Voice & Symptom Notes Input -->
             <div class="form-group" style="margin-top: 1rem;">
               <div class="form-label">
-                <span data-i18n="symptom_label">Field Symptom Observations</span>
+                <label for="symptom-notes" data-i18n="symptom_label">Field Symptom Observations</label>
                 <button type="button" class="voice-capture-btn" id="btn-voice-toggle">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -169,11 +171,11 @@
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                 <div>
-                  <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;" data-i18n="lat_label">Latitude (°N)</label>
+                  <label for="input-lat" style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;" data-i18n="lat_label">Latitude (°N)</label>
                   <input type="number" id="input-lat" class="select-enterprise" style="background:#ffffff; color:#0f172a;" value="28.6139" step="0.0001">
                 </div>
                 <div>
-                  <label style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;" data-i18n="lon_label">Longitude (°E)</label>
+                  <label for="input-lon" style="display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;" data-i18n="lon_label">Longitude (°E)</label>
                   <input type="number" id="input-lon" class="select-enterprise" style="background:#ffffff; color:#0f172a;" value="77.2090" step="0.0001">
                 </div>
               </div>
@@ -308,9 +310,9 @@
 
           <!-- Tab Navigation -->
           <div class="card" style="padding: 1.25rem;">
-            <div class="tabs-container">
-              <button class="tab-btn active" id="tab-btn-farmer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="tabs-container" role="tablist" aria-label="Telemetry Output Views">
+              <button type="button" class="tab-btn active" id="tab-btn-farmer" role="tab" aria-selected="true" aria-controls="tab-content-farmer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                   <circle cx="9" cy="7" r="4"/>
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
@@ -318,8 +320,8 @@
                 </svg>
                 <span data-i18n="tab_farmer">Farmer Action Plan</span>
               </button>
-              <button class="tab-btn" id="tab-btn-govt">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <button type="button" class="tab-btn" id="tab-btn-govt" role="tab" aria-selected="false" aria-controls="tab-content-govt">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
                 </svg>
                 <span data-i18n="tab_govt">Government Telemetry Feed</span>
@@ -327,7 +329,7 @@
             </div>
 
             <!-- Tab Content 1: Farmer Action Plan -->
-            <div id="tab-content-farmer">
+            <div id="tab-content-farmer" role="tabpanel" aria-labelledby="tab-btn-farmer">
               <div class="farmer-view-card">
                 <div class="farmer-headline-box">
                   <div>
@@ -367,7 +369,7 @@
             </div>
 
             <!-- Tab Content 2: Government Telemetry -->
-            <div id="tab-content-govt" style="display: none;">
+            <div id="tab-content-govt" role="tabpanel" aria-labelledby="tab-btn-govt" style="display: none;">
               <div class="telemetry-grid">
                 
                 <!-- Taxonomy & Classification -->
@@ -471,11 +473,11 @@
           <table class="telemetry-table" style="font-size: 0.85rem; width: 100%;">
             <thead>
               <tr style="background: #f1f5f9; font-weight: 700; color: var(--text-secondary);">
-                <td style="padding: 0.65rem;" data-i18n="buffer_table_depot">Regional Silo Depot</td>
-                <td data-i18n="buffer_table_zone">Agro-Zone</td>
-                <td data-i18n="buffer_table_cap">Current Capacity</td>
-                <td data-i18n="buffer_table_threat">Epidemic Threat Status</td>
-                <td data-i18n="buffer_table_action">Action Protocol</td>
+                <th scope="col" style="padding: 0.65rem; text-align: left;" data-i18n="buffer_table_depot">Regional Silo Depot</th>
+                <th scope="col" style="text-align: left;" data-i18n="buffer_table_zone">Agro-Zone</th>
+                <th scope="col" style="text-align: left;" data-i18n="buffer_table_cap">Current Capacity</th>
+                <th scope="col" style="text-align: left;" data-i18n="buffer_table_threat">Epidemic Threat Status</th>
+                <th scope="col" style="text-align: left;" data-i18n="buffer_table_action">Action Protocol</th>
               </tr>
             </thead>
             <tbody>

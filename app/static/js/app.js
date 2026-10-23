@@ -159,10 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 1. Navigation Switching Between All 4 Operations Sections
   function switchNav(activeNav, activeViewSection, headerKey) {
-    [navSurveillance, navBuffer, navDispatch, navSafety].forEach(n => n.classList.remove("active"));
+    [navSurveillance, navBuffer, navDispatch, navSafety].forEach(n => {
+      n.classList.remove("active");
+      n.setAttribute("aria-selected", "false");
+    });
     [viewSurveillance, viewBuffer, viewDispatch, viewSafety].forEach(v => v.style.display = "none");
 
     activeNav.classList.add("active");
+    activeNav.setAttribute("aria-selected", "true");
     activeViewSection.style.display = activeViewSection === viewSurveillance ? "grid" : "block";
     const localizedTitle = getTranslation(currentTargetLang, headerKey);
     stageHeaderTitle.textContent = localizedTitle || headerKey;
@@ -275,14 +279,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Tab Switching
   tabBtnFarmer.addEventListener("click", () => {
     tabBtnFarmer.classList.add("active");
+    tabBtnFarmer.setAttribute("aria-selected", "true");
     tabBtnGovt.classList.remove("active");
+    tabBtnGovt.setAttribute("aria-selected", "false");
     tabContentFarmer.style.display = "block";
     tabContentGovt.style.display = "none";
   });
 
   tabBtnGovt.addEventListener("click", () => {
     tabBtnGovt.classList.add("active");
+    tabBtnGovt.setAttribute("aria-selected", "true");
     tabBtnFarmer.classList.remove("active");
+    tabBtnFarmer.setAttribute("aria-selected", "false");
     tabContentGovt.style.display = "block";
     tabContentFarmer.style.display = "none";
   });
@@ -312,6 +320,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 5. Drag and Drop File Ingestion
   dropzone.addEventListener("click", () => imageFileInput.click());
+  dropzone.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      imageFileInput.click();
+    }
+  });
 
   dropzone.addEventListener("dragover", (e) => {
     e.preventDefault();
